@@ -1,0 +1,27 @@
+[gd_scene load_steps=6 format=3 uid="uid://2mmhrg43xxjv"]
+
+[ext_resource type="Script" path="res://main.gd" id="1_jpo50"]
+[ext_resource type="PackedScene" uid="uid://cwoqurn87b2fj" path="res://tile.tscn" id="2_yqecj"]
+[ext_resource type="Script" path="res://fly_camera.gd" id="3_84pc8"]
+[ext_resource type="Texture2D" uid="uid://byfmwa43glgnn" path="res://assets/Crosshair.svg" id="4_x6nux"]
+[ext_resource type="Script" path="res://crosshair.gd" id="5_umnyt"]
+
+[node name="Node3D" type="Node3D"]
+script = ExtResource("1_jpo50")
+TileScene = ExtResource("2_yqecj")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.86734, 0.497716, 0, -0.497716, 0.86734, 0, 0.928551, 1.68515)
+script = ExtResource("3_84pc8")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="TextureRect" type="TextureRect" parent="CanvasLayer"]
+offset_right = 40.0
+offset_bottom = 40.0
+scale = Vector2(0.05, 0.05)
+texture = ExtResource("4_x6nux")
+stretch_mode = 5
+script = ExtResource("5_umnyt")
+
+[node name="Tiles" type="Node" parent="."]
