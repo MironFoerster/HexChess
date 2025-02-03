@@ -47,7 +47,7 @@ func detect_click():
 		var hit_node = result["collider"]
 		print("Hit node: ", hit_node.name)
 		if hit_node.name == "TileBody":
-			get_parent().ripple(hit_node.get_parent())
+			get_parent().get_parent().ripple(hit_node.get_parent())
 	else:
 		print("No node hit.")
 

@@ -30,3 +30,6 @@ func subtract_with(other: CubeCoordinates) -> CubeCoordinates:
 func distance_to(other: CubeCoordinates) -> int:
 	var coords = subtract_with(other)
 	return max(abs(coords.q), abs(coords.r), abs(coords.s))
+	
+func equals(other: CubeCoordinates) -> bool:
+	return q == other.q and r == other.r and s == other.s
