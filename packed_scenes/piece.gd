@@ -12,7 +12,7 @@ var type: String = ""
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	controller.select_piece.connect(_on_select_piece)
+	controller.take_action.connect(_on_take_action)
 	angular_damp = 1.0
 	freeze = true
 	freeze_mode = RigidBody3D.FREEZE_MODE_KINEMATIC
@@ -24,10 +24,10 @@ func _process(delta: float) -> void:
 func _input_event(camera, event, position, normal, shape_idx):
 	if event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_LEFT:
-			if event.pressed: # press
-				interactor.pressed_on(self)
-			elif !event.pressed: # release
-				interactor.released_on(self)
+			#if event.pressed: # press
+				#interactor.pressed_on(self)
+			#elif !event.pressed: # release
+				#interactor.released_on(self)
 			
 
 func initialize(type: String, coordinates: CubeCoordinates) -> void:
@@ -60,11 +60,12 @@ func appear_at(coordinates: CubeCoordinates) -> void:
 	print(position)
 	#freeze = true
 	
-func _on_select_piece(piece: Node3D) -> void:
-	if piece == self:
-		selected = true
-	else:
-		selected = false
+func _on_take_action(from: Node3D, to: Node3D, mode: String) -> void:
+	if mode == "move":
+		appear_at(to.coordinates)
+	elif mode == "affect":
+		# make effect on piece on other tile
+		pass
 
-func _on_mouse_exited() -> void:
-	interactor.exited_from(self)
+#func _on_mouse_exited() -> void:
+	#interactor.exited_from(self)

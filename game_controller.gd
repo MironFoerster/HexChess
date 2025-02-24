@@ -3,8 +3,9 @@ extends Node
 var PIECES = preload("res://pieces_conf.gd").new().PIECES
 var PIECE_SCENE = load("res://packed_scenes/piece.tscn") as PackedScene
 
-signal select_piece(piece: Node3D)
 signal hover_tile(piece: Node3D)
+signal update_highlights()
+signal take_action(from: Node3D, to: Node3D, mode: String)
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:

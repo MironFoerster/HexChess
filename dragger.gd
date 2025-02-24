@@ -16,19 +16,23 @@ func _ready() -> void:
 	pass
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
-	if raycast.is_colliding():
-		var hit_tile = raycast.get_collider()
-		TP.position = raycast.get_collision_point()
-		controller.hover_tile.emit(hit_tile)
-		hovering_tile = hit_tile
-	else:
-		controller.hover_tile.emit(null)
-		hovering_tile = null
-		
-	if dragging:
-		var anchor_pos = cursor_intersects_y(y_level)
-		if anchor_pos != Vector3.ZERO:
-			anchor.position = anchor_pos
+	pass
+	# old dragging code
+	#if raycast.is_colliding():
+		#var hit_tile = raycast.get_collider()
+		#TP.position = raycast.get_collision_point()
+		#if not hovering_tile ==  hit_tile:
+			#controller.hover_tile.emit(hit_tile)
+			#hovering_tile = hit_tile
+	#else:
+		#if not hovering_tile == null:
+			#controller.hover_tile.emit(null)
+			#hovering_tile = null
+		#
+	#if dragging:
+		#var anchor_pos = cursor_intersects_y(y_level)
+		#if anchor_pos != Vector3.ZERO:
+			#anchor.position = anchor_pos
 		
 
 func end_dragging() -> void:
