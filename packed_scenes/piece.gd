@@ -21,9 +21,9 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	pass
 
-func _input_event(camera, event, position, normal, shape_idx):
-	if event is InputEventMouseButton:
-		if event.button_index == MOUSE_BUTTON_LEFT:
+#func _input_event(camera, event, position, normal, shape_idx):
+	#if event is InputEventMouseButton:
+		#if event.button_index == MOUSE_BUTTON_LEFT:
 			#if event.pressed: # press
 				#interactor.pressed_on(self)
 			#elif !event.pressed: # release

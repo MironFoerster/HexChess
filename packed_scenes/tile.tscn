@@ -61,3 +61,5 @@ libraries = {
 }
 
 [node name="HighlightTileModel" parent="." instance=ExtResource("3_281t3")]
+
+[node name="Piece" type="Node" parent="."]
