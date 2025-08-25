@@ -58,7 +58,6 @@ func appear_at(coordinates: CubeCoordinates) -> void:
 	print(coordinates._to_vector3(0.0))
 	rotation = Vector3.ZERO
 	print(position)
-	#freeze = true
 	
 func _on_take_action(from: Node3D, to: Node3D, mode: String) -> void:
 	if mode == "move":

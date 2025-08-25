@@ -1,6 +1,6 @@
 [gd_scene load_steps=8 format=3 uid="uid://cwoqurn87b2fj"]
 
-[ext_resource type="Script" path="res://tile.gd" id="1_4l4ja"]
+[ext_resource type="Script" path="res://scripts/tile.gd" id="1_4l4ja"]
 [ext_resource type="PackedScene" uid="uid://5ce7n8cfqcvj" path="res://models/tiles/tile_model.tscn" id="2_pxfdl"]
 [ext_resource type="PackedScene" uid="uid://djytbskvfmyl" path="res://models/tiles/highlight_tile_model.tscn" id="3_281t3"]
 
