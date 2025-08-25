@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=4 uid="uid://djytbskvfmyl"]
+[gd_scene load_steps=7 format=4 uid="uid://dovkd8c1j2et2"]
 
 [ext_resource type="Texture2D" uid="uid://d4juyyhrew0x8" path="res://assets/tiles/hex_tile_low_poly/textures/initialShadingGroup_baseColor.png" id="1_st76l"]
 [ext_resource type="Texture2D" uid="uid://chu52sqews43l" path="res://assets/tiles/hex_tile_low_poly/textures/initialShadingGroup_normal.png" id="2_y1wth"]
