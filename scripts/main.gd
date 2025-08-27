@@ -26,7 +26,7 @@ func _ready() -> void:
 	multiplayer.connection_failed.connect(_on_connection_failed)
 	multiplayer.server_disconnected.connect(_on_server_disconnected)
 	
-	if OS.has_feature("server"):  # or check CLI args
+	if OS.has_feature("server") or "--server" in OS.get_cmdline_args():  # or check CLI args
 		_start_server()
 	else:
 		pass
@@ -37,7 +37,7 @@ func _start_server():
 	peer.set_bind_ip("0.0.0.0")
 	var err = peer.create_server(port, max_players)
 	if err != OK:
-		push_error("Failed to start server: %d" % err)
+		print("Failed to start server: %d" % err)
 		return
 	multiplayer.multiplayer_peer = peer
 	print("Server started on port %d" % port)
@@ -51,7 +51,8 @@ func _register_player(new_player_info):
 
 
 func _on_player_connected(id):
-	pass#_register_player.rpc_id(id, player_info)
+	if multiplayer.is_server():
+		print("A client connected.")
 
 func _on_player_disconnected(id):
 	#players.erase(id)
