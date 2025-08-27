@@ -1,4 +1,36 @@
 # Godot 4+ specific ignores
 .godot/
 /android/
+
+# Godot import cache (auto-generated)
+.import/
+
+# Godot export cache (auto-generated)
+.export/
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Temporary or backup files
 *.tmp
+*.bak
+*.swp
+*.swo
+
+# Logs
+*.log
+
+# Build folders (your own export builds)
+builds/
+
+# Mono / C# files (if using Godot C#)
+*.userprefs
+*.csproj
+*.sln
+*.user
+*.pidb
+*.mdb
+*.opendb
+*.VC.db
+*.pdb
