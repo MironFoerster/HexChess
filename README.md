@@ -1,2 +1,7 @@
 ## HexChess (please suggest names)
-a game in its soul based on the all time classic, but played on a hexagonal grid and with some spice to it
+Chess, but on Hexagons, but with terrains, but with crazy Pieces
+
+### Run Debug Server and Client
+in project folder run
+```run_debug.bat (--n-clients 1)```
+One terminal is the server, the others the clients. Each client will also spawn a game window.
