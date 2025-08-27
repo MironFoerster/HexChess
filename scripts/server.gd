@@ -8,7 +8,10 @@ var game_state = {}
 
 func _ready():
 	var peer = ENetMultiplayerPeer.new()
-	peer.create_server(port, max_players)
+	var err = peer.create_server(port, max_players)
+	if err != OK:
+		push_error("Failed to start server: %d" % err)
+		return
 	multiplayer.multiplayer_peer = peer
 	print("Server started on port %d" % port)
 

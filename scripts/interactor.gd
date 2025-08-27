@@ -1,6 +1,5 @@
 extends Node
 
-@onready var dragger: Node = $"../Dragger"
 @onready var controller: Node = $"../GameController"
 var pressed: Node3D
 var action_mode: String = "move"

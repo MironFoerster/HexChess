@@ -1,0 +1,13 @@
+services:
+  godot-server:
+    build: .
+    ports:
+      - "3000:3000/tcp"
+      - "3000:3000/udp"
+    restart: unless-stopped
+    networks:
+      - godot-net
+
+networks:
+  godot-net:
+    driver: bridge

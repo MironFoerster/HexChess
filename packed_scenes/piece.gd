@@ -1,7 +1,6 @@
 extends RigidBody3D
 
-var PIECES = load("res://pieces_conf.gd").new().PIECES
-@onready var dragger: Node = $"../../Dragger"
+var PIECES = load("res://scripts/pieces_conf.gd").new().PIECES
 @onready var interactor: Node = $"../../Interactor"
 @onready var controller: Node = $"../../GameController"
 

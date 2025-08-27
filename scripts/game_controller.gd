@@ -1,6 +1,6 @@
 extends Node
 
-var PIECES = preload("res://pieces_conf.gd").new().PIECES
+var PIECES = preload("res://scripts/pieces_conf.gd").new().PIECES
 var PIECE_SCENE = load("res://packed_scenes/piece.tscn") as PackedScene
 
 signal hover_tile(piece: Node3D)
@@ -9,10 +9,11 @@ signal take_action(from: Node3D, to: Node3D, mode: String)
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	var p = spawn_piece("swordsman", CubeCoordinates.new(0,-1,1))
-	var d = spawn_piece("goblin", CubeCoordinates.new(1,-1,0))
-	d.appear_at(CubeCoordinates.new(-1, 1, 0))
-	p.appear_at(CubeCoordinates.new(0, 1, -1))
+	pass
+	#var p = spawn_piece("swordsman", CubeCoordinates.new(0,-1,1))
+	#var d = spawn_piece("goblin", CubeCoordinates.new(1,-1,0))
+	#d.appear_at(CubeCoordinates.new(-1, 1, 0))
+	#p.appear_at(CubeCoordinates.new(0, 1, -1))
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
