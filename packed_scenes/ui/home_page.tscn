@@ -1,0 +1,126 @@
+[gd_scene load_steps=5 format=3 uid="uid://b72ulsb0vvp2u"]
+
+[ext_resource type="Theme" uid="uid://cshqx4nywmt3o" path="res://resources/themes/nice_theme.tres" id="1_12lim"]
+[ext_resource type="Texture2D" uid="uid://xdn5fpt51fea" path="res://assets/icons/gearx1.png" id="2_5w8x3"]
+[ext_resource type="Script" path="res://scripts/ui/home_page.gd" id="2_xvxyg"]
+[ext_resource type="Texture2D" uid="uid://dlga423pn66pa" path="res://assets/icons/exitx1.png" id="4_ij6ch"]
+
+[node name="HomePage" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_12lim")
+script = ExtResource("2_xvxyg")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.708397, 0.57977, 0.552541, 1)
+
+[node name="PlayContainer" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -183.5
+offset_top = -14.5
+offset_right = 183.5
+offset_bottom = 14.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 13
+alignment = 1
+
+[node name="ChooseModeButton" type="OptionButton" parent="PlayContainer"]
+layout_mode = 2
+selected = 0
+allow_reselect = true
+item_count = 4
+popup/item_0/text = "Classic"
+popup/item_1/text = "Battle Royale"
+popup/item_1/id = 1
+popup/item_2/text = "Capture The Flag"
+popup/item_2/id = 2
+popup/item_3/text = "Defend The Treasure"
+popup/item_3/id = 3
+
+[node name="PlayRandomOnlineButton" type="Button" parent="PlayContainer"]
+layout_mode = 2
+text = "Play Online"
+
+[node name="OrLabel" type="Label" parent="PlayContainer"]
+layout_mode = 2
+text = "or"
+
+[node name="PlayLocalButton" type="Button" parent="PlayContainer"]
+layout_mode = 2
+text = "Play Local"
+
+[node name="JoinOrCreateContainer" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -480.0
+offset_top = 16.0
+offset_right = -16.0
+offset_bottom = 56.0
+grow_horizontal = 0
+theme_override_constants/separation = 13
+alignment = 1
+
+[node name="JoinCodeInput" type="LineEdit" parent="JoinOrCreateContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "Enter Game-Code..."
+virtual_keyboard_type = 2
+
+[node name="JoinButton" type="Button" parent="JoinOrCreateContainer"]
+layout_mode = 2
+text = "Join Game"
+
+[node name="OrLabel" type="Label" parent="JoinOrCreateContainer"]
+layout_mode = 2
+text = "or"
+
+[node name="CreateButton" type="Button" parent="JoinOrCreateContainer"]
+layout_mode = 2
+text = "Create Game"
+
+[node name="OptionsButton" type="TextureButton" parent="."]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -64.0
+offset_right = 64.0
+grow_vertical = 0
+texture_normal = ExtResource("2_5w8x3")
+stretch_mode = 5
+
+[node name="ExitButton" type="TextureButton" parent="."]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -64.0
+offset_top = -64.0
+grow_horizontal = 0
+grow_vertical = 0
+texture_normal = ExtResource("4_ij6ch")
+stretch_mode = 5
+
+[connection signal="pressed" from="PlayContainer/PlayLocalButton" to="." method="_on_play_local_button_pressed"]
+[connection signal="pressed" from="OptionsButton" to="." method="_on_options_button_pressed"]
+[connection signal="pressed" from="ExitButton" to="." method="_on_exit_button_pressed"]

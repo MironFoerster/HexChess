@@ -1,0 +1,19 @@
+extends Control
+
+signal request_page_change(page_name)
+
+# Called when the node enters the scene tree for the first time.
+func _ready() -> void:
+	pass # Replace with function body.
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta: float) -> void:
+	pass
+
+func _on_music_toggle_button_toggled(toggled_on: bool) -> void:
+	GlobalAudio.toggle_music(toggled_on)
+
+
+func _on_home_button_pressed() -> void:
+	request_page_change.emit("home")
