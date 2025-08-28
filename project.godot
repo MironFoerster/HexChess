@@ -14,6 +14,10 @@ config/name="HexChess"
 run/main_scene="res://main.tscn"
 config/features=PackedStringArray("4.3", "Forward Plus")
 
+[autoload]
+
+GlobalAudio="*res://scripts/autoloads/global_audio.gd"
+
 [input]
 
 ui_left={
