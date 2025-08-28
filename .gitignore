@@ -5,6 +5,7 @@
 
 # Godot import cache (auto-generated)
 .import/
+*.import
 
 # Godot export cache (auto-generated)
 .export/
