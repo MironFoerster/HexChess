@@ -18,13 +18,13 @@ for %%A in (%*) do (
 )
 
 :: Start server (headless, in new terminal)
-start "Server" godot4console --server --headless --path %PROJECT%
+start "Server" cmd /k godot4console --server --headless --path %PROJECT%
 
 :: Start clients
 set /a COUNTER=1
 :client_loop
 if %COUNTER% leq %NCLIENTS% (
-    start "Client %COUNTER%" godot4console --path %PROJECT%
+    start "Client %COUNTER%" cmd /k godot4console --path %PROJECT%
     set /a COUNTER+=1
     goto client_loop
 )
