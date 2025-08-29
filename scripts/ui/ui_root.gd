@@ -7,6 +7,8 @@ var page_scenes = {
 	"options": preload("res://packed_scenes/ui/options_page.tscn"),
 	"units": preload("res://packed_scenes/ui/units_page.tscn"),
 	"ingame": preload("res://packed_scenes/ui/ingame_page.tscn"),
+	"private_lobby_joined": preload("res://packed_scenes/ui/private_lobby_joined_page.tscn"),
+	"private_lobby_admin": preload("res://packed_scenes/ui/private_lobby_admin_page.tscn"),
 }
 var cached_pages: = {}
 var current_page: Control
