@@ -17,6 +17,7 @@ config/features=PackedStringArray("4.3", "Forward Plus")
 [autoload]
 
 GlobalAudio="*res://scripts/autoloads/global_audio.gd"
+GlobalNetworking="*res://scripts/autoloads/global_networking.gd"
 
 [input]
 
