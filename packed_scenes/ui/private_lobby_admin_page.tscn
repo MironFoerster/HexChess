@@ -1,0 +1,86 @@
+[gd_scene load_steps=3 format=3 uid="uid://ifir15l0yldw"]
+
+[ext_resource type="Script" path="res://scripts/ui/private_lobby_admin_page.gd" id="1_s86kk"]
+[ext_resource type="Texture2D" uid="uid://dlga423pn66pa" path="res://assets/icons/exitx1.png" id="2_e3lhg"]
+
+[node name="PrivateLobbyAdminPage" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_s86kk")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.489863, 0.6442, 0.682383, 1)
+
+[node name="CancelGameButton" type="TextureButton" parent="."]
+layout_mode = 0
+offset_right = 8.0
+offset_bottom = 8.0
+texture_normal = ExtResource("2_e3lhg")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -25.0
+offset_right = 20.0
+offset_bottom = 25.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 20
+
+[node name="AdminContainer" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_constants/separation = 13
+alignment = 1
+
+[node name="ChooseModeButton" type="OptionButton" parent="VBoxContainer/AdminContainer"]
+layout_mode = 2
+selected = 0
+allow_reselect = true
+item_count = 4
+popup/item_0/text = "Classic"
+popup/item_1/text = "Battle Royale"
+popup/item_1/id = 1
+popup/item_2/text = "Capture The Flag"
+popup/item_2/id = 2
+popup/item_3/text = "Defend The Treasure"
+popup/item_3/id = 3
+
+[node name="StartGameButton" type="Button" parent="VBoxContainer/AdminContainer"]
+layout_mode = 2
+text = "Start Game
+"
+
+[node name="NumPlayersLabel" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Number of players: --"
+
+[node name="JoinCodeLabel" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -153.0
+offset_top = 11.0
+offset_right = -20.0
+offset_bottom = 34.0
+grow_horizontal = 0
+text = "Game Code: xxxx"
+
+[connection signal="pressed" from="CancelGameButton" to="." method="_on_cancel_game_button_pressed"]

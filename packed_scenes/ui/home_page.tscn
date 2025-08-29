@@ -82,7 +82,9 @@ alignment = 1
 layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "Enter Game-Code..."
+max_length = 6
 virtual_keyboard_type = 2
+caret_blink = true
 
 [node name="JoinButton" type="Button" parent="JoinOrCreateContainer"]
 layout_mode = 2
@@ -122,5 +124,9 @@ texture_normal = ExtResource("4_ij6ch")
 stretch_mode = 5
 
 [connection signal="pressed" from="PlayContainer/PlayLocalButton" to="." method="_on_play_local_button_pressed"]
+[connection signal="text_changed" from="JoinOrCreateContainer/JoinCodeInput" to="." method="_on_join_code_input_text_changed"]
+[connection signal="text_submitted" from="JoinOrCreateContainer/JoinCodeInput" to="." method="_on_join_button_pressed"]
+[connection signal="pressed" from="JoinOrCreateContainer/JoinButton" to="." method="_on_join_button_pressed"]
+[connection signal="pressed" from="JoinOrCreateContainer/CreateButton" to="." method="_on_create_button_pressed"]
 [connection signal="pressed" from="OptionsButton" to="." method="_on_options_button_pressed"]
 [connection signal="pressed" from="ExitButton" to="." method="_on_exit_button_pressed"]
