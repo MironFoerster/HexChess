@@ -7,8 +7,8 @@ const SOUND_DIR: String = "res://assets/sounds"
 # Dictionary to hold loaded sounds
 var sounds: Dictionary = {}
 const musics: Dictionary = {
-	"home": preload("res://assets/music/home_music.mp3"),
-	"game": preload("res://assets/music/game_music.mp3")
+	"home": preload("res://assets/music/precious_memories.mp3"),
+	"game": preload("res://assets/music/echoes_of_time.mp3")
 	}
 var current_music: String = "home"
 var sounds_enabled: bool = true
