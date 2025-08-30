@@ -1,9 +1,9 @@
 extends Resource
 class_name PlayerData
 
-var id: int
 var nickname: String
+var rank: int
 
-func _init(_id: int, _nickname: String):
-	id = _id
+func _init(_nickname: String, _rank: int):
 	nickname = _nickname
+	rank = _rank

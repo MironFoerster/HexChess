@@ -1,23 +1,11 @@
 extends Node
 
-# players relevant to the server
-var connected_players: Array[PlayerData] = [PlayerData.new(3, "bob")]
-#{
-	#"id": 3,
-	#"nickname": "bob"
-#}
+# only for server
+var connected_players: Array[int] = [3]
+var registered_players: Dictionary = {3: PlayerData.new("bob")}  # Dictionary[int, PLayerData]
 
-# players relevant to the client
-var joined_players: Array[PlayerData] = [PlayerData.new(3, "bob")]
-
-var sessions: Array[SessionData] = [SessionData.new("Session2", "private", 4, [3,4,5,6], "123456")]
-#{
-	#"node_name": "Session2",
-	#"type": "private", # / "public"
-	#"admin_id": 4,
-	#"player_ids": [3,4,5,6],
-	#"game_code": "123456",
-#}
+# contains max one session on clients
+var sessions: Array[SessionData] = [SessionData.new("Session2", "private", 3, [3,4,5,6], {}, "123456")]
 
 # These signals can be connected to by a UI lobby scene or the game scene.
 signal player_connected(peer_id, player_info)
@@ -53,7 +41,7 @@ func start_server():
 	print("Server started on port %d" % port)
 
 	
-func connect_to_server(ip, port, on_success: Callable, on_failure: Callable):
+func connect_to_server(on_success: Callable, on_failure: Callable):
 	var peer = ENetMultiplayerPeer.new()
 	var err = peer.create_client(server_ip, port)
 	if err != OK:
@@ -67,11 +55,18 @@ func connect_to_server(ip, port, on_success: Callable, on_failure: Callable):
 func _on_player_connected(id):
 	if multiplayer.is_server():
 		print("A client connected.")
+		connected_players.append(id)
 	else:
 		print("Another player connected.")
 
 func _on_player_disconnected(id):
 	#TODO
+	if multiplayer.is_server():
+		print("A client disconnected.")
+		connected_players.erase(id)
+		registered_players.erase(id)
+	else:
+		print("Another player disconnected.")
 	#players.erase(id)
 	player_disconnected.emit(id)
 
@@ -89,8 +84,9 @@ func _on_connect_failure():
 
 func _on_server_disconnected():
 	multiplayer.multiplayer_peer = null
-	joined_players.clear()
-	server_disconnected.emit()
+	print("Server disconnected...trying to reconnect...")
+	server_disconnected.emit() #TODO: make sure every place that listenes to networking signals is never instanciated on the server
+	connect_to_server(_connect_success_callback, _connect_failure_callback) #TODO: maybe different callbacks?
 
 
 func check_join_code(code: String):
@@ -101,12 +97,11 @@ func _check_join_code(code: String):
 	for session in sessions:
 		if code == session.game_code:
 			_player_joined.rpc(connected_players.find(func(p): return p.id == multiplayer.get_remote_sender_id()))
-	#multiplayer.get_remote_sender_id()
 	
 @rpc("any_peer", "call_remote", "reliable")
 func _player_joined(player: PlayerData):
 	#TODO handle self sifferently than others
-	joined_players.append(player)
+	joined_players[multiplayer.get_remote_sender_id()] = player
 
 
 
