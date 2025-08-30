@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://c2nkkgdr6fs5e"]
 
-[ext_resource type="Script" path="res://scripts/ui/private_lobby_joined_page.gd" id="1_f5hwt"]
+[ext_resource type="Script" uid="uid://cyhc2vyr4kk3w" path="res://scripts/ui/private_lobby_joined_page.gd" id="1_f5hwt"]
 [ext_resource type="Texture2D" uid="uid://dlga423pn66pa" path="res://assets/icons/exitx1.png" id="1_y1yoa"]
 
 [node name="PrivateLobbyJoinedPage" type="Control"]

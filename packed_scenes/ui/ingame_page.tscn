@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://cyfqyy1p77jyo"]
 
-[ext_resource type="Script" path="res://scripts/ui/ingame_page.gd" id="1_fsoqm"]
+[ext_resource type="Script" uid="uid://cd2btc5rxwjvo" path="res://scripts/ui/ingame_page.gd" id="1_fsoqm"]
 [ext_resource type="Texture2D" uid="uid://b8tgvkwfuom4t" path="res://assets/icons/homex1.png" id="1_kbitn"]
 
 [node name="IngamePage" type="Control"]

@@ -1,9 +1,9 @@
 [gd_scene load_steps=7 format=4 uid="uid://dv3rdc7g6bq6i"]
 
-[ext_resource type="Script" path="res://scripts/session.gd" id="1_g1nfq"]
-[ext_resource type="Script" path="res://scripts/game_controller.gd" id="1_x6d4q"]
+[ext_resource type="Script" uid="uid://dthgo2axbsoit" path="res://scripts/session.gd" id="1_g1nfq"]
+[ext_resource type="Script" uid="uid://xccqcvunt78" path="res://scripts/game_controller.gd" id="1_x6d4q"]
 [ext_resource type="Texture2D" uid="uid://dqjc0f233w1b1" path="res://assets/atlases/hexagonTerrain_sheet.png" id="2_3cbyr"]
-[ext_resource type="Script" path="res://scripts/interactor.gd" id="4_x21nc"]
+[ext_resource type="Script" uid="uid://bi1oos5yne5vs" path="res://scripts/interactor.gd" id="4_x21nc"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_xcjkw"]
 texture = ExtResource("2_3cbyr")

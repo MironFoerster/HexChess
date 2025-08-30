@@ -96,12 +96,14 @@ func check_join_code(code: String):
 func _check_join_code(code: String):
 	for session in sessions:
 		if code == session.game_code:
-			_player_joined.rpc(connected_players.find(func(p): return p.id == multiplayer.get_remote_sender_id()))
+			#TODO
+			pass
+			#_player_joined.rpc(connected_players.find(func(p): return p.id == multiplayer.get_remote_sender_id()))
 	
-@rpc("any_peer", "call_remote", "reliable")
-func _player_joined(player: PlayerData):
-	#TODO handle self sifferently than others
-	joined_players[multiplayer.get_remote_sender_id()] = player
+#@rpc("any_peer", "call_remote", "reliable")
+#func _player_joined(player: PlayerData):
+	##TODO handle self sifferently than others
+	#joined_players[multiplayer.get_remote_sender_id()] = player
 
 
 

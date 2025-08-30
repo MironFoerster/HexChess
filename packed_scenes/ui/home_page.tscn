@@ -2,7 +2,7 @@
 
 [ext_resource type="Theme" uid="uid://cshqx4nywmt3o" path="res://resources/themes/nice_theme.tres" id="1_12lim"]
 [ext_resource type="Texture2D" uid="uid://xdn5fpt51fea" path="res://assets/icons/gearx1.png" id="2_5w8x3"]
-[ext_resource type="Script" path="res://scripts/ui/home_page.gd" id="2_xvxyg"]
+[ext_resource type="Script" uid="uid://bq18r4eub5bbm" path="res://scripts/ui/home_page.gd" id="2_xvxyg"]
 [ext_resource type="Texture2D" uid="uid://dlga423pn66pa" path="res://assets/icons/exitx1.png" id="4_ij6ch"]
 
 [node name="HomePage" type="Control"]
@@ -46,6 +46,7 @@ selected = 0
 allow_reselect = true
 item_count = 4
 popup/item_0/text = "Classic"
+popup/item_0/id = 0
 popup/item_1/text = "Battle Royale"
 popup/item_1/id = 1
 popup/item_2/text = "Capture The Flag"
