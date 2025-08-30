@@ -1,8 +1,9 @@
-[gd_scene load_steps=6 format=4 uid="uid://dv3rdc7g6bq6i"]
+[gd_scene load_steps=7 format=4 uid="uid://dv3rdc7g6bq6i"]
 
 [ext_resource type="Script" path="res://scripts/session.gd" id="1_g1nfq"]
 [ext_resource type="Script" path="res://scripts/game_controller.gd" id="1_x6d4q"]
 [ext_resource type="Texture2D" uid="uid://dqjc0f233w1b1" path="res://assets/atlases/hexagonTerrain_sheet.png" id="2_3cbyr"]
+[ext_resource type="Script" path="res://scripts/interactor.gd" id="4_x21nc"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_xcjkw"]
 texture = ExtResource("2_3cbyr")
@@ -136,3 +137,6 @@ tile_map_data = PackedByteArray("AAD/////AQAAAAgAAAD+/wAAAQAAAAkAAAD//wEAAQAAAAo
 tile_set = SubResource("TileSet_p4wbt")
 
 [node name="Pieces" type="Node" parent="."]
+
+[node name="Interactor" type="Node" parent="."]
+script = ExtResource("4_x21nc")
