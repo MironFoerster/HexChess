@@ -1,5 +1,5 @@
 ## HexChess (please suggest names)
-Chess, but on Hexagons, but with terrains, but with crazy Pieces
+Chess, but on hexagons, and with terrains, and crazy units, and cards..maybe...hopefully
 
 ### Run Debug Server and Client
 in project folder run
