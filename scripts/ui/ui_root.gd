@@ -3,6 +3,7 @@ extends Control
 @onready var page_container: Control = $PageContainer
 
 var page_scenes = {
+	"login": preload("res://packed_scenes/ui/login_page.tscn"),
 	"home": preload("res://packed_scenes/ui/home_page.tscn"),
 	"options": preload("res://packed_scenes/ui/options_page.tscn"),
 	"units": preload("res://packed_scenes/ui/units_page.tscn"),
@@ -16,7 +17,7 @@ var tween: Tween
 
 
 func _ready():
-	ui_transition_to("home")
+	ui_transition_to("login")
 
 func ui_transition_to(name: String, duration: float = 1):
 	# Cancel any running transition
