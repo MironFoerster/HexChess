@@ -184,7 +184,7 @@ size_flags_vertical = 6
 placeholder_text = "repeat password"
 secret = true
 
-[node name="LoginSubmitButton" type="Button" parent="PlayOnlineContainer/LoginTabContainer/RegisterContainer"]
+[node name="RegisterSubmitButton" type="Button" parent="PlayOnlineContainer/LoginTabContainer/RegisterContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 6
@@ -239,9 +239,12 @@ layout_mode = 2
 size_flags_vertical = 8
 text = "Play Local"
 
+[connection signal="pressed" from="PlayOnlineContainer/LoginTabContainer/NicknameContainer/HBoxContainer/NicknameSubmitButton" to="." method="_on_nickname_submit_button_pressed"]
 [connection signal="pressed" from="PlayOnlineContainer/LoginTabContainer/NicknameContainer/NicknameTabLinksContainer/LoginLinkButton" to="." method="_on_login_link_button_pressed"]
 [connection signal="pressed" from="PlayOnlineContainer/LoginTabContainer/NicknameContainer/NicknameTabLinksContainer/RegisterLinkButton" to="." method="_on_register_link_button_pressed"]
+[connection signal="pressed" from="PlayOnlineContainer/LoginTabContainer/LoginContainer/LoginSubmitButton" to="." method="_on_login_submit_button_pressed"]
 [connection signal="pressed" from="PlayOnlineContainer/LoginTabContainer/LoginContainer/LoginTabLinksContainer/NicknameLinkButton" to="." method="_on_nickname_link_button_pressed"]
 [connection signal="pressed" from="PlayOnlineContainer/LoginTabContainer/LoginContainer/LoginTabLinksContainer/RegisterLinkButton" to="." method="_on_register_link_button_pressed"]
+[connection signal="pressed" from="PlayOnlineContainer/LoginTabContainer/RegisterContainer/RegisterSubmitButton" to="." method="_on_register_submit_button_pressed"]
 [connection signal="pressed" from="PlayOnlineContainer/LoginTabContainer/RegisterContainer/RegisterTabLinksContainer/LoginLinkButton" to="." method="_on_login_link_button_pressed"]
 [connection signal="pressed" from="PlayOnlineContainer/LoginTabContainer/RegisterContainer/RegisterTabLinksContainer/NicknameLinkButton" to="." method="_on_nickname_link_button_pressed"]
