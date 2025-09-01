@@ -1,4 +1,5 @@
-extends Node
+extends RefCounted
+class_name Database
 
 var db  # SQLite instance
 
@@ -44,6 +45,9 @@ func validate_password(username: String, password: String) -> bool:
 
 func set_user_rank(username: String, rank: int):
 	_db_set("users", "rank", username, rank)
+	
+func get_user_rank(username: String) -> int:
+	return _db_get("users", "rank", username)
 
 func set_user_password(username: String, password: String):
 	_db_set("users", "password", username, password.sha256_text())

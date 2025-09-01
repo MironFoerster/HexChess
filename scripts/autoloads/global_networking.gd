@@ -1,5 +1,7 @@
 extends Node
 
+var database := preload("res://scripts/server/database_controller.gd").new()
+
 # only for server
 var connected_players: Array[int] = [3]
 var registered_players: Dictionary = {3: PlayerData.new("bob")}  # Dictionary[int, PLayerData]
