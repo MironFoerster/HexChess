@@ -1,3 +1,5 @@
+server_data.db
+
 # Godot 4+ specific ignores
 .godot/
 /android/
