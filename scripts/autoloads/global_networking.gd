@@ -17,7 +17,7 @@ signal player_disconnected(peer_id: int)
 signal server_disconnected
 signal ident_processed(success: bool)
 
-var server_ip = "172.20.32.1"
+var server_ip = "192.168.68.100"
 var port = 3000
 var max_connected_players = 20
 
