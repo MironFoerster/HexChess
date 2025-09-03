@@ -1,6 +1,7 @@
 extends Node
 
-var database := preload("res://scripts/server/database_controller.gd").new()
+var database_class := preload("res://scripts/server/database_controller.gd")
+var database: Database
 
 var local_player: PlayerData
 
@@ -44,6 +45,7 @@ func start_server():
 		return
 	multiplayer.multiplayer_peer = peer
 	print("Server started on port %d" % port)
+	database = database_class.new()
 
 	
 func _connect_to_server(on_success: Callable, on_failure: Callable):

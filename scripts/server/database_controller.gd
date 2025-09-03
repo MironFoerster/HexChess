@@ -3,9 +3,9 @@ class_name Database
 
 var db  # SQLite instance
 
-func _ready():
+func _init():
 	db = SQLite.new()
-	db.path = "user://server_data.db"
+	db.path = "./server_data.db"
 	db.open_db()
 
 	# Users table: username as primary key, password hash, rank
