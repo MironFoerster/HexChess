@@ -60,9 +60,48 @@ func _connect_to_server(on_success: Callable, on_failure: Callable):
 	_connect_failure_callback = on_failure
 
 
+
+
+### NICKNAME ###
+func nickname_user(nickname: String):
+	print("[CLIENT] Start nicknaming player: ", nickname)
+	if _connected_to_server():
+		print("[CLIENT] Already connected.")
+		# call _nickname_user rpc on server
+		_nickname_user.rpc_id(1, nickname)
+	else:
+		# first connect to server before rpc call
+		_connect_to_server(func(): _nickname_user.rpc_id(1, nickname),
+						func(): ident_processed.emit(false))
+
+@rpc("any_peer", "call_remote", "reliable")  # server
+func _nickname_user(nickname: String):
+	print("[SERVER] Nicknaming client: ", nickname)
+	var sender_id = multiplayer.get_remote_sender_id()
+	var player = PlayerData.new(nickname, true)
+	
+	identified_players[sender_id] = player
+	_nickname_processed.rpc_id(sender_id, true, player.serialize())
+
+
+@rpc("authority", "call_remote", "reliable")  # client
+func _nickname_processed(success: bool, serialized_player: Dictionary[String, Variant] = {}):
+	if success:
+		print("[CLIENT] Nicknaming player succeded: ", serialized_player)
+	else:
+		print("[CLIENT] Nicknaming player failed.")
+	
+	local_player = PlayerData.deserialize(serialized_player)
+	ident_processed.emit(success)
+
+
+
+
 ### LOGIN ###
 func login_user(username: String, password: String):
-	if multiplayer.multiplayer_peer: #TODO: make sure is set to null on disconnect
+	print("[CLIENT] Start logging in player: ", username)
+	if _connected_to_server():
+		print("[CLIENT] Already connected.")
 		# call _login_user rpc on server
 		_login_user.rpc_id(1, username, password)
 	else:
@@ -72,6 +111,7 @@ func login_user(username: String, password: String):
 
 @rpc("any_peer", "call_remote", "reliable")  # server
 func _login_user(username: String, password: String):
+	print("[SERVER] Logging in client: ", username)
 	var sender_id = multiplayer.get_remote_sender_id()
 	if database.validate_password(username, password):
 		var player = PlayerData.new(username, false, database.get_user_rank(username))
@@ -83,38 +123,22 @@ func _login_user(username: String, password: String):
 		
 @rpc("authority", "call_remote", "reliable")  # client
 func _login_processed(success: bool, serialized_player: Dictionary[String, Variant] = {}):
-	local_player = PlayerData.deserialize(serialized_player)
-	ident_processed.emit(success)
-
-
-### NICKNAME ###
-func nickname_user(nickname: String):
-	if multiplayer.multiplayer_peer: #TODO: make sure is set to null on disconnect
-		# call _nickname_user rpc on server
-		_nickname_user.rpc_id(1, nickname)
+	if success:
+		print("[CLIENT] Logging in player succeded: ", serialized_player)
 	else:
-		# first connect to server before rpc call
-		_connect_to_server(func(): _nickname_user.rpc_id(1, nickname),
-						func(): ident_processed.emit(false))
-
-@rpc("any_peer", "call_remote", "reliable")  # server
-func _nickname_user(nickname: String):
-	var sender_id = multiplayer.get_remote_sender_id()
-	var player = PlayerData.new(nickname, true)
+		print("[CLIENT] Logging in player failed.")
 	
-	identified_players[sender_id] = player
-	_nickname_processed.rpc_id(sender_id, true, player.serialize())
-
-
-@rpc("authority", "call_remote", "reliable")  # client
-func _nickname_processed(success: bool, serialized_player: Dictionary[String, Variant] = {}):
 	local_player = PlayerData.deserialize(serialized_player)
 	ident_processed.emit(success)
+
+
 
 
 ### REGISTER ###
 func register_user(username: String, password: String):
-	if multiplayer.multiplayer_peer: #TODO: make sure is set to null on disconnect
+	print("[CLIENT] Start registering player: ", username)
+	if _connected_to_server():
+		print("[CLIENT] Already connected.")
 		# call _register_user rpc on server
 		_register_user.rpc_id(1, username, password)
 	else:
@@ -124,6 +148,7 @@ func register_user(username: String, password: String):
 
 @rpc("any_peer", "call_remote", "reliable")  # server
 func _register_user(username: String, password: String):
+	print("[SERVER] Registering client: ", username)
 	var sender_id = multiplayer.get_remote_sender_id()
 	database.add_user(username, password)
 	var player = PlayerData.new(username, false, database.get_user_rank(username))
@@ -133,8 +158,15 @@ func _register_user(username: String, password: String):
 
 @rpc("authority", "call_remote", "reliable")  # client
 func _register_processed(success: bool, serialized_player: Dictionary[String, Variant] = {}):
+	if success:
+		print("[CLIENT] Registering player succeded: ", serialized_player)
+	else:
+		print("[CLIENT] Registering player failed.")
+	
 	local_player = PlayerData.deserialize(serialized_player)
 	ident_processed.emit(success)
+
+
 
 
 ### JOIN PARTY ###
@@ -197,6 +229,10 @@ func _on_server_disconnected():
 	server_disconnected.emit() #TODO: make sure every place that listenes to networking signals is never instanciated on the server
 	_connect_to_server(_connect_success_callback, _connect_failure_callback) #TODO: maybe different callbacks?
 
+
+## UTILS
+func _connected_to_server() -> bool:
+	return multiplayer.multiplayer_peer is ENetMultiplayerPeer and multiplayer.multiplayer_peer.get_connection_status() == MultiplayerPeer.CONNECTION_CONNECTED
 
 ## LEFTOVERS ##
 
