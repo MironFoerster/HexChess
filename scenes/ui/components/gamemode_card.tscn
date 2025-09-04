@@ -1,0 +1,64 @@
+[gd_scene load_steps=4 format=3 uid="uid://cmnafsvmrefu7"]
+
+[ext_resource type="Script" uid="uid://becdtocdc8x3b" path="res://scripts/ui/components/gamemode_card.gd" id="1_ib1bu"]
+[ext_resource type="Texture2D" uid="uid://b7juyrxnfl02b" path="res://assets/placeholder.png" id="2_nc5sn"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kacbo"]
+bg_color = Color(0.627948, 0.502675, 0.440979, 1)
+corner_radius_top_left = 40
+corner_radius_top_right = 40
+corner_radius_bottom_right = 40
+corner_radius_bottom_left = 40
+
+[node name="GamemodeCard" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_ib1bu")
+
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_kacbo")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -490.0
+offset_right = 490.0
+offset_bottom = 924.0
+grow_horizontal = 2
+
+[node name="ModeTitleLabel" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 6
+text = "COOL MODE"
+
+[node name="ModeIcon" type="TextureRect" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+texture = ExtResource("2_nc5sn")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ModeDescriptionLabel" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 6
+text = "lorem ipsum dolor sit amet"
+
+[node name="PlayButton" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 6
+text = "PLAY"
