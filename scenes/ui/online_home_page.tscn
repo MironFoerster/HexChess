@@ -1,19 +1,17 @@
-[gd_scene load_steps=5 format=3 uid="uid://b72ulsb0vvp2u"]
+[gd_scene load_steps=4 format=3 uid="uid://3s1nxstyu8ms"]
 
-[ext_resource type="Theme" uid="uid://cshqx4nywmt3o" path="res://resources/themes/nice_theme.tres" id="1_12lim"]
-[ext_resource type="Texture2D" uid="uid://xdn5fpt51fea" path="res://assets/icons/gearx1.png" id="2_5w8x3"]
-[ext_resource type="Script" uid="uid://bq18r4eub5bbm" path="res://scripts/ui/home_page.gd" id="2_xvxyg"]
-[ext_resource type="Texture2D" uid="uid://dlga423pn66pa" path="res://assets/icons/exitx1.png" id="4_ij6ch"]
+[ext_resource type="Script" uid="uid://cib38ic5jdcs1" path="res://scripts/ui/online_home_page.gd" id="1_rhaex"]
+[ext_resource type="Texture2D" uid="uid://xdn5fpt51fea" path="res://assets/icons/gearx1.png" id="2_httx4"]
+[ext_resource type="Texture2D" uid="uid://dlga423pn66pa" path="res://assets/icons/exitx1.png" id="3_1ajgu"]
 
-[node name="HomePage" type="Control"]
+[node name="OnlineHomePage" type="Control"]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme = ExtResource("1_12lim")
-script = ExtResource("2_xvxyg")
+script = ExtResource("1_rhaex")
 
 [node name="ColorRect" type="ColorRect" parent="."]
 layout_mode = 1
@@ -107,7 +105,7 @@ anchor_bottom = 1.0
 offset_top = -64.0
 offset_right = 64.0
 grow_vertical = 0
-texture_normal = ExtResource("2_5w8x3")
+texture_normal = ExtResource("2_httx4")
 stretch_mode = 5
 
 [node name="ExitButton" type="TextureButton" parent="."]
@@ -121,7 +119,7 @@ offset_left = -64.0
 offset_top = -64.0
 grow_horizontal = 0
 grow_vertical = 0
-texture_normal = ExtResource("4_ij6ch")
+texture_normal = ExtResource("3_1ajgu")
 stretch_mode = 5
 
 [connection signal="pressed" from="PlayContainer/PlayLocalButton" to="." method="_on_play_local_button_pressed"]
