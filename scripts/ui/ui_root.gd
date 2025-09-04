@@ -3,13 +3,14 @@ extends Control
 @onready var page_container: Control = $PageContainer
 
 var page_scenes = {
-	"login": preload("res://packed_scenes/ui/login_page.tscn"),
-	"home": preload("res://packed_scenes/ui/home_page.tscn"),
-	"options": preload("res://packed_scenes/ui/options_page.tscn"),
-	"units": preload("res://packed_scenes/ui/units_page.tscn"),
-	"ingame": preload("res://packed_scenes/ui/ingame_page.tscn"),
-	"private_lobby_joined": preload("res://packed_scenes/ui/private_lobby_joined_page.tscn"),
-	"private_lobby_admin": preload("res://packed_scenes/ui/private_lobby_admin_page.tscn"),
+	"login": preload("res://scenes/ui/login_page.tscn"),
+	"online_home": preload("res://scenes/ui/online_home_page.tscn"),
+	"local_home": preload("res://scenes/ui/local_home_page.tscn"),
+	"options": preload("res://scenes/ui/options_page.tscn"),
+	"units": preload("res://scenes/ui/units_page.tscn"),
+	"ingame": preload("res://scenes/ui/ingame_page.tscn"),
+	"private_lobby_joined": preload("res://scenes/ui/private_lobby_joined_page.tscn"),
+	"private_lobby_admin": preload("res://scenes/ui/private_lobby_admin_page.tscn"),
 }
 var cached_pages: = {}
 var current_page: Control
