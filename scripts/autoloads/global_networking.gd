@@ -197,7 +197,7 @@ func _on_player_connected(id):
 	if multiplayer.is_server():
 		print("A client connected.")
 		connected_players.append(id)
-	else:
+	elif id != multiplayer.get_unique_id():
 		print("Another player connected.")
 
 func _on_player_disconnected(id):
