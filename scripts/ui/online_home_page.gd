@@ -13,8 +13,8 @@ func _on_exit_button_pressed() -> void:
 
 
 func _on_play_local_button_pressed() -> void:
-	request_page_change.emit("ingame")
-	GlobalAudio.switch_music_to("game")
+	request_page_change.emit("local_home")
+	# TODO: do this on game start: GlobalAudio.switch_music_to("game")
 
 func _on_create_button_pressed() -> void:
 	request_page_change.emit("private_lobby_admin")

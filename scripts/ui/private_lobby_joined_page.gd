@@ -14,4 +14,4 @@ func _process(delta: float) -> void:
 
 
 func _on_leave_game_button_pressed() -> void:
-	request_page_change.emit("home")
+	request_page_change.emit("online_home")

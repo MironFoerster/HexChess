@@ -16,4 +16,5 @@ func _on_music_toggle_button_toggled(toggled_on: bool) -> void:
 
 
 func _on_home_button_pressed() -> void:
-	request_page_change.emit("home")
+	# TODO: decide if local or online home
+	request_page_change.emit("local_home")

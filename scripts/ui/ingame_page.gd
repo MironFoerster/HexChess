@@ -12,5 +12,6 @@ func _process(delta: float) -> void:
 	pass
 
 func _on_home_button_pressed() -> void:
-	request_page_change.emit("home")
+	# TODO: decide if local or online home
+	request_page_change.emit("local_home")
 	GlobalAudio.switch_music_to("home")

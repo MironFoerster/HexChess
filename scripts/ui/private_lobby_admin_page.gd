@@ -13,4 +13,4 @@ func _process(delta: float) -> void:
 	pass
 
 func _on_cancel_game_button_pressed() -> void:
-	request_page_change.emit("home")
+	request_page_change.emit("online_home")

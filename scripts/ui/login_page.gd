@@ -40,7 +40,13 @@ func _on_register_submit_button_pressed() -> void:
 func _on_ident_processed(success: bool):
 	_clear_all_inputs()
 	if success:
-		request_page_change.emit("home")
+		request_page_change.emit("online_home")
+
+## HANDLE PLAY LOCAL
+
+
+func _on_play_local_button_pressed() -> void:
+	request_page_change.emit("local_home")
 
 
 
