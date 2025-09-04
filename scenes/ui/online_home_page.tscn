@@ -1,5 +1,6 @@
-[gd_scene load_steps=4 format=3 uid="uid://3s1nxstyu8ms"]
+[gd_scene load_steps=5 format=3 uid="uid://3s1nxstyu8ms"]
 
+[ext_resource type="Theme" uid="uid://cshqx4nywmt3o" path="res://resources/themes/nice_theme.tres" id="1_httx4"]
 [ext_resource type="Script" uid="uid://cib38ic5jdcs1" path="res://scripts/ui/online_home_page.gd" id="1_rhaex"]
 [ext_resource type="Texture2D" uid="uid://xdn5fpt51fea" path="res://assets/icons/gearx1.png" id="2_httx4"]
 [ext_resource type="Texture2D" uid="uid://dlga423pn66pa" path="res://assets/icons/exitx1.png" id="3_1ajgu"]
@@ -11,6 +12,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = ExtResource("1_httx4")
 script = ExtResource("1_rhaex")
 
 [node name="ColorRect" type="ColorRect" parent="."]

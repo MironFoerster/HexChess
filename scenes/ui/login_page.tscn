@@ -1,7 +1,7 @@
 [gd_scene load_steps=6 format=3 uid="uid://bx36nsgoh262s"]
 
-[ext_resource type="Theme" uid="uid://cshqx4nywmt3o" path="res://resources/themes/nice_theme.tres" id="1_vxkiu"]
-[ext_resource type="Script" uid="uid://c8ssrcrwm55gt" path="res://scripts/ui/login_page.gd" id="2_ahplj"]
+[ext_resource type="Theme" uid="uid://cshqx4nywmt3o" path="res://resources/themes/nice_theme.tres" id="1_i8rjd"]
+[ext_resource type="Script" uid="uid://c8ssrcrwm55gt" path="res://scripts/ui/login_page.gd" id="2_b8dgg"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_vxkiu"]
 font_size = 26
@@ -24,8 +24,8 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme = ExtResource("1_vxkiu")
-script = ExtResource("2_ahplj")
+theme = ExtResource("1_i8rjd")
+script = ExtResource("2_b8dgg")
 
 [node name="ColorRect" type="ColorRect" parent="."]
 layout_mode = 1
@@ -248,3 +248,4 @@ text = "Play Local"
 [connection signal="pressed" from="PlayOnlineContainer/LoginTabContainer/RegisterContainer/RegisterSubmitButton" to="." method="_on_register_submit_button_pressed"]
 [connection signal="pressed" from="PlayOnlineContainer/LoginTabContainer/RegisterContainer/RegisterTabLinksContainer/LoginLinkButton" to="." method="_on_login_link_button_pressed"]
 [connection signal="pressed" from="PlayOnlineContainer/LoginTabContainer/RegisterContainer/RegisterTabLinksContainer/NicknameLinkButton" to="." method="_on_nickname_link_button_pressed"]
+[connection signal="pressed" from="PlayLocalContainer/PlayLocalButton" to="." method="_on_play_local_button_pressed"]

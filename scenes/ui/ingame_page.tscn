@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://cyfqyy1p77jyo"]
 
-[ext_resource type="Script" uid="uid://cd2btc5rxwjvo" path="res://scripts/ui/ingame_page.gd" id="1_fsoqm"]
-[ext_resource type="Texture2D" uid="uid://b8tgvkwfuom4t" path="res://assets/icons/homex1.png" id="1_kbitn"]
+[ext_resource type="Script" uid="uid://cd2btc5rxwjvo" path="res://scripts/ui/ingame_page.gd" id="1_cdb3y"]
+[ext_resource type="Texture2D" uid="uid://b8tgvkwfuom4t" path="res://assets/icons/homex1.png" id="2_qge5p"]
 
 [node name="IngamePage" type="Control"]
 layout_mode = 3
@@ -10,7 +10,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_fsoqm")
+script = ExtResource("1_cdb3y")
 
 [node name="HomeButton" type="TextureButton" parent="."]
 layout_mode = 1
@@ -20,7 +20,7 @@ anchor_bottom = 1.0
 offset_top = -64.0
 offset_right = 64.0
 grow_vertical = 0
-texture_normal = ExtResource("1_kbitn")
+texture_normal = ExtResource("2_qge5p")
 stretch_mode = 5
 
 [connection signal="pressed" from="HomeButton" to="." method="_on_home_button_pressed"]
