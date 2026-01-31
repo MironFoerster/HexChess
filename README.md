@@ -12,18 +12,18 @@ One terminal is the server, the others the clients. Each client will also spawn 
 ### Overview
 The code is structured around the online-multiplayer and the turn-based nature of the game.
 
-The *logical game state* is entirely contained and managed by the Session class (session.gd).
-For a 2 player game there would be three instances of the game running, one as the server and two as clients.
+The **logical game state** is entirely contained and managed by the Session class (session.gd).
+For a 2 player game there would be three instances of the code running, one as the server and two as clients.
 The Session object on the server is seen as ground truth, the Session objects on the clients are mirrors.
 
-The *networking* logic for both server and clients is contained in global_networking.gd.
+The **networking** logic for both server and clients is contained in global_networking.gd.
 Each client- or server-instance of the game has one GlobalNetworking instance (autoload).
 GlobalNetworking provides specific methods for any communication a game instance would have to make.
 e.g. A client might use GlobalNetworking.perform_action() to 
 
 On the client:
-*Session object* (mirror) has pure query methods that depend on game rules and state.
-*Game scene* calls them when it needs gameplay info (e.g. highlight legal tiles).
+**Session object** (mirror) has pure query methods that depend on game rules and state.
+**Game scene** calls them when it needs gameplay info (e.g. highlight legal tiles).
 When a player actually makes a move:
 Game scene sends command → Networking → Server.
 Server checks → updates session → broadcasts authoritative update.
@@ -47,11 +47,11 @@ session.gd
 Represents 
 ### Resources, Resource Types and Resource Type Specs
 
-The base values of specific items/terrains/units etc. are defined in Godot *resources*.
+The base values of specific items/terrains/units etc. are defined in Godot **resources**.
 
 For example, the base values of the "body armor" item are defined in the body_armor.tres Resource.
 
-Different *resource types* (items, terrain, units, etc.) require different sets of properties.  
+Different **resource types** (items, terrain, units, etc.) require different sets of properties.  
 An item might define a `buff_effect`, while terrain might define a `tile_texture`.
 
-To formalize this, each resource type has a small *specification file* (`*_spec.gd`) that defines which properties resources of that type must or may have.
+To formalize this, each resource type has a small **specification file** (`*_spec.gd`) that defines which properties resources of that type must or may have.
