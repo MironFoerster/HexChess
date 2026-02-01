@@ -3,14 +3,14 @@ extends Control
 @onready var page_container: Control = $PageContainer
 
 var page_scenes = {
-	"login": preload("res://scenes/ui/login_page.tscn"),
-	"online_home": preload("res://scenes/ui/online_home_page.tscn"),
-	"local_home": preload("res://scenes/ui/local_home_page.tscn"),
-	"options": preload("res://scenes/ui/options_page.tscn"),
-	"units": preload("res://scenes/ui/units_page.tscn"),
-	"ingame": preload("res://scenes/ui/ingame_page.tscn"),
-	"private_lobby_joined": preload("res://scenes/ui/private_lobby_joined_page.tscn"),
-	"private_lobby_admin": preload("res://scenes/ui/private_lobby_admin_page.tscn"),
+	"ident": preload("res://scenes/ui/pages/ident_page.tscn"),
+	"online_home": preload("res://scenes/ui/pages/online_home_page.tscn"),
+	"local_home": preload("res://scenes/ui/pages/local_home_page.tscn"),
+	"options": preload("res://scenes/ui/pages/options_page.tscn"),
+	"units": preload("res://scenes/ui/pages/units_page.tscn"),
+	"ingame": preload("res://scenes/ui/pages/ingame_page.tscn"),
+	"private_lobby_joined": preload("res://scenes/ui/pages/private_lobby_joined_page.tscn"),
+	"private_lobby_admin": preload("res://scenes/ui/pages/private_lobby_admin_page.tscn"),
 }
 var cached_pages: = {}
 var current_page: Control
@@ -18,7 +18,7 @@ var tween: Tween
 
 
 func _ready():
-	ui_transition_to("login")
+	ui_transition_to("ident")
 
 func ui_transition_to(name: String, duration: float = 1):
 	# Cancel any running transition

@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="UnitData" load_steps=5 format=3 uid="uid://c0ek41gje0yib"]
+
+[ext_resource type="Script" path="res://data/_type_definitions/action_type_data/attack_action_data.gd" id="1_0gnto"]
+[ext_resource type="Script" path="res://data/_type_definitions/unit_data.gd" id="1_iksb3"]
+[ext_resource type="SpriteFrames" uid="uid://j3avyxg6drxa" path="res://assets/sprite_frames/warrior_frames.tres" id="2_r7pec"]
+[ext_resource type="Resource" uid="uid://pv1u885itt0b" path="res://data/patterns/infinite_star.tres" id="3_r7pec"]
+
+[resource]
+script = ExtResource("1_iksb3")
+max_hp = 3
+frames = ExtResource("2_r7pec")
+walk_pattern = ExtResource("3_r7pec")
+attacks = Dictionary[String, ExtResource("1_0gnto")]({})
+metadata/_custom_type_script = "uid://dj27vlyvpkehg"

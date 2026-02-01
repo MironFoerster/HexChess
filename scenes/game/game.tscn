@@ -1,0 +1,39 @@
+[gd_scene load_steps=4 format=4 uid="uid://b7hqi7n6a5oh4"]
+
+[ext_resource type="Script" uid="uid://3c831mfs5q8n" path="res://scripts/game.gd" id="1_lbhrr"]
+[ext_resource type="TileSet" uid="uid://dlcd4svdgx8t" path="res://assets/tile_set.tres" id="3_kelw5"]
+[ext_resource type="Script" uid="uid://bi1oos5yne5vs" path="res://scripts/interactor.gd" id="4_u5sy4"]
+
+[node name="Game" type="Node2D"]
+script = ExtResource("1_lbhrr")
+
+[node name="Map" type="TileMapLayer" parent="."]
+y_sort_enabled = true
+tile_map_data = PackedByteArray("AAD/////AQAAAAgAAAD+/wAAAQAAAAkAAAD//wEAAQAAAAoAAAAAAP//AQABAAgAAAD//wAAAQABAAkAAAAAAAEAAQABAAoAAAABAAAAAQABAAoAAAADAAEAAQABAAoAAAACAAAAAQABAAoAAAACAP//AQABAAoAAAABAP//AQABAAoAAAAAAAAAAQACAAoAAAABAAEAAQACAAoAAAACAAEAAQACAAoAAAADAP//AQACAAoAAAACAAIAAQABAAYAAFADAAIAAQABAAYAAFAEAAEAAQABAAYAADADAAAAAQABAAYAABAEAAAAAQABAAYAAAD9/wMAAQABAAUAAAD8/wQAAQABAAYAAAD+/wMAAQACAAUAAAD9/wQAAQACAAYAAAAAAAMAAQABAAUAAAD//wQAAQABAAYAAAABAAMAAQACAAUAAAAAAAQAAQACAAYAAAD6/wMAAQABAAUAAAD5/wQAAQABAAYAAAD7/wMAAQACAAUAAAD6/wQAAQACAAYAAAABAAQAAQAEAAMAAQACAAMAAQAEAAMAAQA=")
+tile_set = ExtResource("3_kelw5")
+
+[node name="HighlightMap" type="TileMapLayer" parent="."]
+y_sort_enabled = true
+tile_map_data = PackedByteArray("AAD/////AQAAAAgAAAD+/wAAAQAAAAkAAAD//wEAAQAAAAoAAAAAAP//AQABAAgAAAD//wAAAQABAAkAAAAAAAEAAQABAAoAAAABAAAAAQABAAoAAAADAAEAAQABAAoAAAACAAAAAQABAAoAAAACAP//AQABAAoAAAABAP//AQABAAoAAAAAAAAAAQACAAoAAAABAAEAAQACAAoAAAACAAEAAQACAAoAAAADAP//AQACAAoAAAACAAIAAQABAAYAAFADAAIAAQABAAYAAFAEAAEAAQABAAYAADADAAAAAQABAAYAABAEAAAAAQABAAYAAAD9/wMAAQABAAUAAAD8/wQAAQABAAYAAAD+/wMAAQACAAUAAAD9/wQAAQACAAYAAAAAAAMAAQABAAUAAAD//wQAAQABAAYAAAABAAMAAQACAAUAAAAAAAQAAQACAAYAAAD6/wMAAQABAAUAAAD5/wQAAQABAAYAAAD7/wMAAQACAAUAAAD6/wQAAQACAAYAAAABAAQAAQAEAAMAAQACAAMAAQAEAAMAAQA=")
+tile_set = ExtResource("3_kelw5")
+script = ExtResource("4_u5sy4")
+
+[node name="Units" type="Node" parent="."]
+
+[node name="HUDLayer" type="CanvasLayer" parent="."]
+
+[node name="HUDRoot" type="Control" parent="HUDLayer"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="EndTurnButton" type="Button" parent="HUDLayer/HUDRoot"]
+layout_mode = 0
+offset_right = 8.0
+offset_bottom = 8.0
+
+[connection signal="pressed" from="HUDLayer/HUDRoot/EndTurnButton" to="." method="_on_end_turn_button_pressed"]

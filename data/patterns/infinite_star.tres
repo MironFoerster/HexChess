@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="PatternData" load_steps=2 format=3 uid="uid://pv1u885itt0b"]
+
+[ext_resource type="Script" uid="uid://cory56lrp301j" path="res://data/_type_definitions/pattern_data.gd" id="1_0b7u5"]
+
+[resource]
+script = ExtResource("1_0b7u5")
+distance_limit = 0
+scale_factor = 0
+base_steps = Array[Vector2]([])
+metadata/_custom_type_script = "uid://cory56lrp301j"

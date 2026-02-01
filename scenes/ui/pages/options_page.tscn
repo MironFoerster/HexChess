@@ -1,0 +1,58 @@
+[gd_scene load_steps=6 format=3 uid="uid://bjd81ixx05eej"]
+
+[ext_resource type="Script" uid="uid://n3mhp3ee6nbq" path="res://scripts/ui/pages/options_page.gd" id="1_yuemn"]
+[ext_resource type="Texture2D" uid="uid://b4vm4qp1p81ta" path="res://assets/icons/musicOff.png" id="2_dykt8"]
+[ext_resource type="Texture2D" uid="uid://b7jjwdjqemgs2" path="res://assets/icons/musicOn.png" id="3_dvjjx"]
+[ext_resource type="Texture2D" uid="uid://b8tgvkwfuom4t" path="res://assets/icons/homex1.png" id="4_m7maa"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_gjcum"]
+
+[node name="OptionsPage" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_yuemn")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.654631, 0.580844, 0.706236, 1)
+
+[node name="OptionsContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 13
+anchor_left = 0.5
+anchor_right = 0.5
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MusicToggleButton" type="CheckButton" parent="OptionsContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 6
+theme_override_styles/focus = SubResource("StyleBoxEmpty_gjcum")
+theme_override_icons/checked = ExtResource("2_dykt8")
+theme_override_icons/unchecked = ExtResource("3_dvjjx")
+button_pressed = true
+
+[node name="HomeButton" type="TextureButton" parent="."]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -64.0
+offset_right = 64.0
+grow_vertical = 0
+texture_normal = ExtResource("4_m7maa")
+stretch_mode = 5
+
+[connection signal="toggled" from="OptionsContainer/MusicToggleButton" to="." method="_on_music_toggle_button_toggled"]
+[connection signal="pressed" from="HomeButton" to="." method="_on_home_button_pressed"]

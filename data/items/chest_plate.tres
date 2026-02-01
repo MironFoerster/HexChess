@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3 uid="uid://dlfi0dc37j0do"]
+
+[ext_resource type="Script" uid="uid://cfnfnmhlfeef5" path="res://data/_type_definitions/item_data.gd" id="1_mlngb"]
+
+[resource]
+script = ExtResource("1_mlngb")
+display_name = "Chestplate"
+buff_property = "armor"
+buff_amount = 2
+metadata/_custom_type_script = "uid://cfnfnmhlfeef5"

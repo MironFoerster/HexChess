@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3 uid="uid://csfbfma8rqabp"]
+
+[ext_resource type="Script" uid="uid://cfnfnmhlfeef5" path="res://data/_type_definitions/item_data.gd" id="1_m8s5n"]
+
+[resource]
+script = ExtResource("1_m8s5n")
+display_name = "Sword"
+buff_property = ""
+buff_amount = 0
+metadata/_custom_type_script = "uid://cfnfnmhlfeef5"

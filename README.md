@@ -48,11 +48,7 @@ This interaction exclusively happens between a single client and a single server
 If other clients need to be informed of a state change that happened as a result of the interaction,
 the SERVER HANDLER can call UPDATE METHOD WRAPPERS for any client. Those directly update/modify the session of the specified client.
 
-
-
-session.gd
-Represents 
-## Game Objects, Object Types, Resources, Resource Types and Resource Type Specs
+## Game Objects, Object Types, Resources, Resource Types and Resource Type Schema
 
 **Game Objects** are the logical representations of things that exist in the game world, such as items, terrain tiles, and units. The game session uses them to represent and update the current game state.
 
@@ -67,4 +63,4 @@ For example, the base values of the "body armor" item are defined in the `body_a
 Different **Resource Types** (items, terrain, units, etc.) require different sets of properties.  
 An item might define a `buff_effect`, while terrain might define a `tile_texture`.
 
-To formalize this, each resource type has a small **Specification File** (`<type>_spec.gd`) that defines which properties resources of that type must or may have.
+To formalize this, each resource type has a small **Specification File** (`<type>_data.gd`) that defines which properties resources of that type must or may have.

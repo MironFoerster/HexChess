@@ -17,7 +17,6 @@ var tween: Tween
 func _ready():
 	make_current()
 
-
 func _process(delta):
 	handle_movement(delta)
 	handle_drag()

@@ -1,18 +1,21 @@
 extends Node
 
-@onready var controller: Node = $"../GameController"
+@onready var game: Node = $"../Game"
 var pressed: Node3D
 var action_mode: String = "move"
 var tile_highlights: Dictionary = {
 	"selected": null,
 	"hovered": null,
-	"movable": [],
-	"affectable": []
+	"targetable": [],
 }
-# Called when the node enters the scene tree for the first time.
-func _ready() -> void:
-	pass # Replace with function body.
 
+#func ripple (tile: Node3D) -> void:
+	#for distance in range(map_radius*2 +1):
+		#for t in $Tiles.get_children():
+			#if t.coordinates.distance_to(tile.coordinates) == distance:
+				#t.toggle_highlight()
+				##t.get_node("AnimationPlayer").play("bump")
+		#await get_tree().create_timer(0.06).timeout
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
@@ -25,12 +28,7 @@ func _input(event) -> void:
 				action_mode = "affect"
 			elif not event.pressed:  # Released
 				action_mode = "move"
-	# former dragging code
-	#if event is InputEventMouseButton:
-		#if event.button_index == MOUSE_BUTTON_LEFT:
-			#if !event.pressed: # release
-				#pressed = null
-				#dragger.end_dragging()
+
 
 func _unhandled_input(event) -> void:
 	if event is InputEventMouseMotion:
@@ -40,9 +38,9 @@ func pressed_on(tile: Node3D) -> void:
 	if tile_highlights.selected != null:
 		if tile_highlights.selected != tile:
 			if action_mode == "move" and tile in tile_highlights.movable:
-				controller.take_action.emit(tile_highlights.selected, tile, "move")
+				game.request_take_action.emit(tile_highlights.selected, tile, "move")
 			elif action_mode == "affect" and tile in tile_highlights.affectable:
-				controller.take_action.emit(tile_highlights.selected, tile, "affect")
+				game.take_action.emit(tile_highlights.selected, tile, "affect")
 			
 			tile_highlights.selected = null
 			hovered_on(tile)
@@ -54,30 +52,9 @@ func pressed_on(tile: Node3D) -> void:
 		
 		
 	tile_highlights.selected = tile
-	update_actable_highlights()
-	controller.update_highlights.emit()
+	game.update_highlights.emit()
 	
 func hovered_on(tile: Node3D) -> void:
 	if tile_highlights.hovered != tile:
 		tile_highlights.hovered = tile
-		update_actable_highlights()
-		controller.update_highlights.emit()
-
-func update_actable_highlights() -> void:
-	if tile_highlights.selected != null:
-		var tiles = $"../Tiles".get_children()
-		for tile in tiles:
-			if not tile == tile_highlights.selected:
-				tile_highlights.movable.append(tile)
-				tile_highlights.affectable.append(tile)
-	else:
-		tile_highlights.movable = []
-		tile_highlights.affectable = []
-		
-#func released_on(piece: Node3D) -> void:
-	#pressed = null
-
-# former dragging code
-#func exited_from(piece: Node3D) -> void:
-	#if pressed == piece:
-		#dragger.start_dragging(piece)
+		game.update_highlights.emit()

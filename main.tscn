@@ -1,6 +1,7 @@
-[gd_scene load_steps=7 format=4 uid="uid://2mmhrg43xxjv"]
+[gd_scene load_steps=8 format=4 uid="uid://2mmhrg43xxjv"]
 
 [ext_resource type="Script" uid="uid://j572wagqbkoe" path="res://scripts/main.gd" id="1_jpo50"]
+[ext_resource type="PackedScene" uid="uid://b7hqi7n6a5oh4" path="res://scenes/game/game.tscn" id="2_lquwl"]
 [ext_resource type="Texture2D" uid="uid://dqjc0f233w1b1" path="res://assets/atlases/hexagonTerrain_sheet.png" id="3_gra6f"]
 [ext_resource type="Script" uid="uid://mft5vhwcl26" path="res://scripts/ui/ui_root.gd" id="7_612et"]
 [ext_resource type="Script" uid="uid://d13axvty14l2m" path="res://scripts/camera.gd" id="8_fyxhe"]
@@ -129,7 +130,7 @@ sources/1 = SubResource("TileSetAtlasSource_rlj2k")
 [node name="Main" type="Node2D"]
 script = ExtResource("1_jpo50")
 
-[node name="Sessions" type="Node" parent="."]
+[node name="Game" parent="." instance=ExtResource("2_lquwl")]
 
 [node name="UILayer" type="CanvasLayer" parent="."]
 
@@ -141,6 +142,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("7_612et")
+metadata/_edit_use_anchors_ = true
 
 [node name="PageContainer" type="Control" parent="UILayer/UIRoot"]
 layout_mode = 1
@@ -149,6 +151,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+metadata/_edit_use_anchors_ = true
 
 [node name="Camera" type="Camera2D" parent="."]
 script = ExtResource("8_fyxhe")

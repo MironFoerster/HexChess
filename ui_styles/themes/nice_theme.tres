@@ -1,0 +1,19 @@
+[gd_resource type="Theme" load_steps=3 format=3 uid="uid://cshqx4nywmt3o"]
+
+[ext_resource type="StyleBox" uid="uid://o32in4c4argk" path="res://ui_styles/style_boxes/button_style_box.tres" id="1_fdsbx"]
+[ext_resource type="StyleBox" uid="uid://dfblntstfgq34" path="res://ui_styles/style_boxes/line_edit_style_box.tres" id="2_k0qa3"]
+
+[resource]
+Button/styles/disabled = ExtResource("1_fdsbx")
+Button/styles/focus = ExtResource("1_fdsbx")
+Button/styles/hover = ExtResource("1_fdsbx")
+Button/styles/normal = ExtResource("1_fdsbx")
+Button/styles/pressed = ExtResource("1_fdsbx")
+LineEdit/colors/caret_color = Color(0, 0, 0, 1)
+LineEdit/colors/font_color = Color(0, 0, 0, 1)
+LineEdit/colors/font_placeholder_color = Color(0, 0, 0, 0.6)
+LineEdit/colors/font_selected_color = Color(0, 0, 0, 1)
+LineEdit/colors/selection_color = Color(0.67542, 0.493977, 0.409883, 1)
+LineEdit/styles/focus = ExtResource("2_k0qa3")
+LineEdit/styles/normal = ExtResource("2_k0qa3")
+LineEdit/styles/read_only = ExtResource("2_k0qa3")
