@@ -27,12 +27,12 @@ static func from_dict(data: Dictionary[StringName, Variant]) -> Cell:
 	
 	# Reconstruct arrays of Status and Item
 	var status_array = data.get("status", [])
-	cell.status = []
+	cell.status.clear()
 	for s_data in status_array:
 		cell.status.append(Status.from_dict(s_data))
 	
 	var items_array = data.get("items", [])
-	cell.items = []
+	cell.items.clear()
 	for i_data in items_array:
 		cell.items.append(Item.from_dict(i_data))
 	

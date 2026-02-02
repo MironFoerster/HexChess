@@ -7,11 +7,14 @@ signal request_page_change(page_name)
 func _ready() -> void:
 	$JoinCodeLabel.text = "Game Code: " + str(GlobalNetworking.session.game_code)
 	GlobalNetworking.session.player_added.connect(_on_player_added)
+	GlobalNetworking.session.game_started.connect(_on_game_started)
+
 
 func _on_player_added():
 	$VBoxContainer/NumPlayersLabel.text = "Number of Players: " + str(GlobalNetworking.session.players.size())
 
-
+func _on_game_started():
+	request_page_change.emit("none")
 
 func _on_leave_game_button_pressed() -> void:
 	request_page_change.emit("online_home")

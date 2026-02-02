@@ -17,8 +17,9 @@ func _on_session_set():
 	GlobalNetworking.session.action_performed.connect(_on_action_performed)
 	
 func _on_game_started():
+	print("Game started!")
 	_start_game_setup()
-	_rebuild_game_scene()
+	#_rebuild_game_scene() TODO need to wait for all relevant things to be ready like map
 
 func _on_map_updated():
 	print("Map updated!")
@@ -40,8 +41,8 @@ func _get_atlas_coords_from_cell(cell: Cell) -> Vector2i:
 func _rebuild_map():
 	map_node.clear()
 	
-	for coords in GlobalNetworking.session.map.keys():
-		var atlas_coords = DataCatalog.terrains[GlobalNetworking.session.map.get(coords).terrain_type].atlas_coords
+	for coords in GlobalNetworking.session.map.cells.keys():
+		var atlas_coords = DataCatalog.terrains[GlobalNetworking.session.map.cells.get(coords).terrain_type].atlas_coords
 		map_node.set_cell(coords, 0, atlas_coords)
 	
 func _rebuild_units():

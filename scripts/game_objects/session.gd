@@ -30,7 +30,8 @@ func start_game():
 	game_started.emit()
 
 func set_map(_map: Map):
-	map = _map.duplicate()
+	print("Map set!")
+	map = _map
 	map_updated.emit()
 
 

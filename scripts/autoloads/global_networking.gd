@@ -199,11 +199,11 @@ func _create_private_room():
 func _create_private_room_processed(success: bool, session_dict: Dictionary[StringName, Variant] = {}):
 	if success:
 		print("[CLIENT] Creating private room succeded: ", session_dict)
-		session = Session.from_dict(session_dict)
-		session_set.emit()
+		set_session(Session.from_dict(session_dict))
+		
 	else:
 		print("[CLIENT] Creating private room failed.")
-		session = null
+		set_session(null)
 	
 	create_private_room_processed.emit(success)
 
@@ -240,10 +240,10 @@ func _join_private_room(code: int):
 func _join_private_room_processed(success: bool, session_dict: Dictionary[StringName, Variant]):
 	if success:
 		print("[CLIENT] Joining private room succeded: ", session_dict)
-		session = Session.from_dict(session_dict)
+		set_session(Session.from_dict(session_dict))
 	else:
 		print("[CLIENT] Joining private room failed.")
-		session = null
+		set_session(null)
 		
 	join_private_room_processed.emit(success)
 
@@ -261,7 +261,7 @@ func _request_processed(request_name: String, success: bool, handler: Callable, 
 
 ### Start SESSION GAME ###
 func request_start_session_game(mode_name: String = ""): # client request
-	print("[CLIENT] Start session game.")
+	print("[CLIENT-REQUEST] Start session game.")
 	if mode_name != "":
 		session.mode_name = mode_name
 	
@@ -288,6 +288,7 @@ func _start_session_game():
 				_session__start_game.rpc_id(player_id)
 			
 			var generated_map: Map = map_generator.generate()
+			print(generated_map)
 
 			# set_map on server
 			sess.set_map(generated_map)
@@ -297,11 +298,11 @@ func _start_session_game():
 				_session__set_map.rpc_id(player_id, generated_map.to_dict())
 
 @rpc("authority", "call_remote", "reliable") # client callback
-func _start_session_game_processed(success: bool, session_dict: Dictionary[StringName, Variant]):
+func _start_session_game_processed(success: bool):
 	if success:
-		print("[CLIENT] Starting session game succeded.")
+		print("[CLIENT-RESPONSE] Starting session game succeded.")
 	else:
-		print("[CLIENT] Starting session game failed.")
+		print("[CLIENT-RESPONSE] Starting session game failed.")
 		
 	start_session_game_processed.emit(success)
 
@@ -315,15 +316,16 @@ func _session__add_player(id: int, player_dict: Dictionary[StringName, Variant])
 		
 @rpc("authority", "call_remote", "reliable") # other room clients
 func _session__start_game():
+		print("[CLIENT-SESSION] Start Game")
 		session.start_game()
 
 @rpc("authority", "call_remote", "reliable") # other room clients
-func _session__set_map(map: Map):
-		session.set_map(map)
+func _session__set_map(map_dict: Dictionary[Vector2i, Variant]):
+		session.set_map(Map.from_dict(map_dict))
 
 @rpc("authority", "call_remote", "reliable") # other room clients
-func _session__perform_unit_action(unit_id: int, action: Action):
-		session.perform_unit_action(unit_id, action)
+func _session__perform_unit_action(unit_id: int, action_dict: Dictionary[StringName, Variant]):
+		session.perform_unit_action(unit_id, Action.from_dict(action_dict))
 
 
 
@@ -360,9 +362,14 @@ func _on_server_disconnected():
 	multiplayer.multiplayer_peer = null
 	print("Server disconnected...trying to reconnect...")
 	server_disconnected.emit() #TODO: make sure every place that listenes to networking signals is never instanciated on the server
-	_connect_to_server(_connect_success_callback, _connect_failure_callback) #TODO: maybe different callbacks?
+	_connect_to_server(func(): print("reconnected!"),
+						func(): print("failed to reconnect")) #TODO: maybe different callbacks?
 
 
 ## UTILS
 func _connected_to_server() -> bool:
 	return multiplayer.multiplayer_peer is ENetMultiplayerPeer and multiplayer.multiplayer_peer.get_connection_status() == MultiplayerPeer.CONNECTION_CONNECTED
+
+func set_session(sess: Session):
+	session = sess
+	session_set.emit()

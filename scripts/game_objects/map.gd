@@ -5,6 +5,9 @@ var cells: Dictionary[Vector2i, Cell]
 
 func _init():
 	pass
+	
+func setCell(coords: Vector2i, cell: Cell):
+	cells[coords] = cell
 
 func to_dict() -> Dictionary[Vector2i, Variant]:
 	var _cells: Dictionary[Vector2i, Variant] = {}
@@ -17,9 +20,7 @@ func to_dict() -> Dictionary[Vector2i, Variant]:
 static func from_dict(data: Dictionary[Vector2i, Variant]) -> Map:
 	var map = Map.new()
 
-	var _cells: Dictionary[Vector2i, Cell] = {}
 	for key in data.keys():
-		_cells[key] = data[key].from_dict()
+		map.cells[key] = Cell.from_dict(data[key])
 
-	map.cells = _cells
 	return map
