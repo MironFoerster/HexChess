@@ -8,19 +8,20 @@ var sessions: Array[Session] = [] # Session.new("private", 3, {3: Player.new("bo
 
 # variables only used by the client instance
 var local_player: Player = null
-var local_session: Session = null
+var session: Session = null
 
 # These signals can be connected to by a UI lobby scene or the game scene.
 signal player_connected(peer_id: int, player_info)
 signal player_disconnected(peer_id: int)
 signal server_disconnected
 signal ident_processed(success: bool)
+signal session_set()
 signal create_private_room_processed(success: bool)
 signal join_private_room_processed(success: bool)
 signal start_session_game_processed(success: bool)
 
-var ip_config := preload("res://scripts/server/database_controller.gd")
-var server_ip = "192.168.68.100"
+var ip_config := preload("res://scripts/database_controller.gd")
+var server_ip = "192.168.68.102"
 var port = 3000
 var max_connected_players = 20
 
@@ -189,19 +190,20 @@ func _create_private_room():
 	print("[SERVER] Creating private room.")
 	var sender_id = multiplayer.get_remote_sender_id()
 	var game_code = 123456
-	var session = Session.new("private", sender_id, {sender_id: local_player}, game_code)
+	var sess = Session.new("private", sender_id, {sender_id: connected_players[sender_id]}, game_code)
 	
-	sessions.append(session)
-	_create_private_room_processed.rpc_id(sender_id, true, session.to_dict())
+	sessions.append(sess)
+	_create_private_room_processed.rpc_id(sender_id, true, sess.to_dict())
 
 @rpc("authority", "call_remote", "reliable")  # client callback
 func _create_private_room_processed(success: bool, session_dict: Dictionary[StringName, Variant] = {}):
 	if success:
 		print("[CLIENT] Creating private room succeded: ", session_dict)
-		local_session = Session.from_dict(session_dict)
+		session = Session.from_dict(session_dict)
+		session_set.emit()
 	else:
 		print("[CLIENT] Creating private room failed.")
-		local_session = null
+		session = null
 	
 	create_private_room_processed.emit(success)
 
@@ -218,29 +220,30 @@ func request_join_private_room(code: int): # client request
 
 @rpc("any_peer", "call_remote", "reliable") # server handler
 func _join_private_room(code: int):
-	for session in sessions:
-		if code == session.game_code:
+	for sess in sessions:
+		if code == sess.game_code:
 			var joined_player_id = multiplayer.get_remote_sender_id()
 			var joined_player = connected_players[joined_player_id]
 			
 			var success = true
-			_join_private_room_processed.rpc_id(joined_player_id, success, session.to_dict())
+			_join_private_room_processed.rpc_id(joined_player_id, success, sess.to_dict())
 			
 			# update session on server
-			session.add_player(joined_player_id, joined_player)
+			sess.add_player(joined_player_id, joined_player)
 			# update session on all clients
 			if success:
-				for player_id in session.players.keys():
-					_session__add_player.rpc_id(player_id, joined_player_id, joined_player)
+				for player_id in sess.players.keys():
+					_session__add_player.rpc_id(player_id, joined_player_id, joined_player.to_dict())
+			break
 					
 @rpc("authority", "call_remote", "reliable") # client callback
 func _join_private_room_processed(success: bool, session_dict: Dictionary[StringName, Variant]):
 	if success:
 		print("[CLIENT] Joining private room succeded: ", session_dict)
-		local_session = Session.from_dict(session_dict)
+		session = Session.from_dict(session_dict)
 	else:
 		print("[CLIENT] Joining private room failed.")
-		local_session = null
+		session = null
 		
 	join_private_room_processed.emit(success)
 
@@ -260,10 +263,10 @@ func _request_processed(request_name: String, success: bool, handler: Callable, 
 func request_start_session_game(mode_name: String = ""): # client request
 	print("[CLIENT] Start session game.")
 	if mode_name != "":
-		local_session.mode_name = mode_name
+		session.mode_name = mode_name
 	
-	if local_session.type == "local":
-		local_session.start_game()
+	if session.type == "local":
+		session.start_game()
 	elif _connected_to_server(): # type == private online/public online
 		_start_session_game.rpc_id(1)
 	else:
@@ -272,25 +275,26 @@ func request_start_session_game(mode_name: String = ""): # client request
 @rpc("any_peer", "call_remote", "reliable") # server handler
 func _start_session_game():
 	var sender_id = multiplayer.get_remote_sender_id()
-	for session in sessions:
-		if sender_id == session.admin_id:
+	for sess in sessions:
+		if sender_id == sess.admin_id:
+			var success = true
 			_start_session_game_processed.rpc_id(sender_id, success)
 			
 			# start game on server
-			session.start_game()
+			sess.start_game()
 			
 			# start game on all player clients
-			for player_id in session.players.keys():
+			for player_id in sess.players.keys():
 				_session__start_game.rpc_id(player_id)
 			
 			var generated_map: Map = map_generator.generate()
 
 			# set_map on server
-			session.set_map(generated_map)
+			sess.set_map(generated_map)
 			
 			# set_map on all player clients
-			for player_id in session.players.keys():
-				_session__set_map.rpc_id(player_id, generated_map)
+			for player_id in sess.players.keys():
+				_session__set_map.rpc_id(player_id, generated_map.to_dict())
 
 @rpc("authority", "call_remote", "reliable") # client callback
 func _start_session_game_processed(success: bool, session_dict: Dictionary[StringName, Variant]):
@@ -306,20 +310,20 @@ func _start_session_game_processed(success: bool, session_dict: Dictionary[Strin
 ### RPC-WRAPPERS FOR UPDATE-METHODS OF THE CLIENT-SESSION ###
 ### Used by the server to directly update a clients session, calls update methods on the client session
 @rpc("authority", "call_remote", "reliable") # other room clients
-func _session__add_player(id: int, player: Player):
-		local_session.add_player(id, player)
+func _session__add_player(id: int, player_dict: Dictionary[StringName, Variant]):
+		session.add_player(id, Player.from_dict(player_dict))
 		
 @rpc("authority", "call_remote", "reliable") # other room clients
 func _session__start_game():
-		local_session.start_game()
+		session.start_game()
 
 @rpc("authority", "call_remote", "reliable") # other room clients
 func _session__set_map(map: Map):
-		local_session.set_map(map)
+		session.set_map(map)
 
 @rpc("authority", "call_remote", "reliable") # other room clients
 func _session__perform_unit_action(unit_id: int, action: Action):
-		local_session.perform_unit_action(unit_id, action)
+		session.perform_unit_action(unit_id, action)
 
 
 

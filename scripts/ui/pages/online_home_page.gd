@@ -31,7 +31,7 @@ func _on_create_private_room_processed(success):
 
 
 func _on_join_button_pressed() -> void:
-	GlobalNetworking.request_join_private_room($JoinOrCreateContainer/JoinCodeInput.text)
+	GlobalNetworking.request_join_private_room(int($JoinOrCreateContainer/JoinCodeInput.text))
 
 func _on_join_private_room_processed(success):
 	if success:

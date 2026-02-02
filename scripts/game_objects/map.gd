@@ -9,7 +9,7 @@ func _init():
 func to_dict() -> Dictionary[Vector2i, Variant]:
 	var _cells: Dictionary[Vector2i, Variant] = {}
 	for key in cells.keys():
-		_cells[key] = data[key].to_dict()
+		_cells[key] = cells[key].to_dict()
 
 	return _cells
 

@@ -1,20 +1,20 @@
 extends Object
 class_name Unit
 
-var data_id: String
+var unit_type: String
 var feature: String
 var status: Array[Status] = []
 var items: Array[Item] = []
 
-func _init(_data_id: String = "", _feature: String = "", _status: Array[Status] = [], _items: Array[Item] = []):
-	data_id = _data_id
+func _init(_unit_type: String = "", _feature: String = "", _status: Array[Status] = [], _items: Array[Item] = []):
+	unit_type = _unit_type
 	feature = _feature
 	status = _status.duplicate()  # ensure we get a copy
 	items = _items.duplicate()    # ensure we get a copy
 
 func to_dict() -> Dictionary[StringName, Variant]:
 	return {
-		"data_id": data_id,
+		"unit_type": unit_type,
 		"feature": feature,
 		"status": status.map(func (s): s.to_dict()),  # assuming Status has to_dict()
 		"items": items.map(func (i): i.to_dict())     # assuming Item has to_dict()
@@ -22,7 +22,7 @@ func to_dict() -> Dictionary[StringName, Variant]:
 
 static func from_dict(data: Dictionary[StringName, Variant]) -> Cell:
 	var cell = Cell.new()
-	cell.data_id = data.get("data_id", "")
+	cell.unit_type = data.get("unit_type", "")
 	cell.feature = data.get("feature", "")
 	
 	# Reconstruct arrays of Status and Item

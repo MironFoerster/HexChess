@@ -1,4 +1,5 @@
 extends Node2D
+class_name Game
 
 var unit_scene = load("res://scenes/game/unit.tscn") as PackedScene
 @onready var map_node = $"./Map"
@@ -8,13 +9,12 @@ var unit_scene = load("res://scenes/game/unit.tscn") as PackedScene
 var units_abilities_cache # TODO put this here or rather directly in session?
 
 func _ready():
+	GlobalNetworking.session_set.connect(_on_session_set)
+	
+func _on_session_set():
 	GlobalNetworking.session.game_started.connect(_on_game_started)
 	GlobalNetworking.session.map_updated.connect(_on_map_updated)
 	GlobalNetworking.session.action_performed.connect(_on_action_performed)
-	
-func _on_set_session(session: Session):
-	session = session
-	_rebuild_game_scene()
 	
 func _on_game_started():
 	_start_game_setup()
@@ -41,7 +41,7 @@ func _rebuild_map():
 	map_node.clear()
 	
 	for coords in GlobalNetworking.session.map.keys():
-		var atlas_coords = _get_atlas_coords_from_cell(GlobalNetworking.session.map.get(coords))
+		var atlas_coords = DataCatalog.terrains[GlobalNetworking.session.map.get(coords).terrain_type].atlas_coords
 		map_node.set_cell(coords, 0, atlas_coords)
 	
 func _rebuild_units():
@@ -54,14 +54,14 @@ func _rebuild_units():
 		unit_node.initialize(unit)
 		units_node.add_child(unit_node)
 
-func spawn_unit(unit_data_id: String, owner_id: int, coordinates: Vector2) -> Node3D:
+func spawn_unit(unit_type: String, owner_id: int, coordinates: Vector2) -> Node3D:
 	
-	if not unit_data_id in DataCatalog.units.keys():
-		print("Unit type not found:", unit_data_id)
+	if not unit_type in DataCatalog.units.keys():
+		print("Unit type not found:", unit_type)
 		return
 		
 	var unit_instance: Node3D = unit_scene.instantiate()
-	unit_instance.initialize(unit_data_id, owner_id, coordinates)
+	unit_instance.initialize(unit_type, owner_id, coordinates)
 	#unit_instance.call_deferred("set_name", "Piece")
 	units_node.add_child(unit_instance)
 	

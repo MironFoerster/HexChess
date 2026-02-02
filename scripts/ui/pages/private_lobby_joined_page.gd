@@ -5,12 +5,12 @@ signal request_page_change(page_name)
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	pass # Replace with function body.
+	$JoinCodeLabel.text = "Game Code: " + str(GlobalNetworking.session.game_code)
+	GlobalNetworking.session.player_added.connect(_on_player_added)
 
+func _on_player_added():
+	$VBoxContainer/NumPlayersLabel.text = "Number of Players: " + str(GlobalNetworking.session.players.size())
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
-	pass
 
 
 func _on_leave_game_button_pressed() -> void:

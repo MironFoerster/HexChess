@@ -1,6 +1,6 @@
 extends Node
 
-@onready var game: Node = $"../Game"
+@onready var game := get_parent() as Game
 var pressed: Node3D
 var action_mode: String = "move"
 var tile_highlights: Dictionary = {

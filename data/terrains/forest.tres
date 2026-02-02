@@ -1,10 +1,9 @@
 [gd_resource type="Resource" script_class="TerrainData" load_steps=2 format=3 uid="uid://dcgersuemtf5l"]
 
-[ext_resource type="Script" uid="uid://ccnnnw5ebmro2" path="res://data/_type_definitions/terrain_data.gd" id="1_vj6jr"]
+[ext_resource type="Script" uid="uid://brmsyqq62c7jn" path="res://data/_type_definitions/terrain_data.gd" id="2_bih8d"]
 
 [resource]
-script = ExtResource("1_vj6jr")
-display_name = "Forest"
-tile_coordinates = Vector2(3, 13)
-can_border_on = Array[ExtResource("1_vj6jr")]([null])
-metadata/_custom_type_script = "uid://ccnnnw5ebmro2"
+script = ExtResource("2_bih8d")
+display_name = ""
+atlas_coords = Vector2i(4, 7)
+can_border_on = Array[ExtResource("2_bih8d")]([])

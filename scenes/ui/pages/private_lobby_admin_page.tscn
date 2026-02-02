@@ -85,3 +85,4 @@ grow_horizontal = 0
 text = "Game Code: xxxx"
 
 [connection signal="pressed" from="CancelGameButton" to="." method="_on_cancel_game_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/AdminContainer/StartGameButton" to="." method="_on_start_game_button_pressed"]

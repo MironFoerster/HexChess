@@ -1,9 +1,9 @@
 [gd_resource type="Resource" script_class="StatusData" load_steps=2 format=3 uid="uid://buwmpqlkjf8ex"]
 
-[ext_resource type="Script" uid="uid://cxrv7j5mivpmf" path="res://data/_type_definitions/status_data.gd" id="1_dxjyq"]
+[ext_resource type="Script" uid="uid://bceppce8tvfpv" path="res://data/_type_definitions/status_data.gd" id="1_a35bk"]
 
 [resource]
-script = ExtResource("1_dxjyq")
+script = ExtResource("1_a35bk")
 display_name = "Poison"
 on_cell_duration = 3
 on_unit_duration = 5
