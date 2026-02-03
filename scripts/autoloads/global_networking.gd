@@ -200,10 +200,9 @@ func _create_private_room_processed(success: bool, session_dict: Dictionary[Stri
 	if success:
 		print("[CLIENT] Creating private room succeded: ", session_dict)
 		set_session(Session.from_dict(session_dict))
-		
 	else:
 		print("[CLIENT] Creating private room failed.")
-		set_session(null)
+		session = null
 	
 	create_private_room_processed.emit(success)
 
@@ -243,7 +242,7 @@ func _join_private_room_processed(success: bool, session_dict: Dictionary[String
 		set_session(Session.from_dict(session_dict))
 	else:
 		print("[CLIENT] Joining private room failed.")
-		set_session(null)
+		session = null
 		
 	join_private_room_processed.emit(success)
 
@@ -261,7 +260,7 @@ func _request_processed(request_name: String, success: bool, handler: Callable, 
 
 ### Start SESSION GAME ###
 func request_start_session_game(mode_name: String = ""): # client request
-	print("[CLIENT-REQUEST] Start session game.")
+	print("[CLIENT] Start session game.")
 	if mode_name != "":
 		session.mode_name = mode_name
 	
@@ -288,7 +287,6 @@ func _start_session_game():
 				_session__start_game.rpc_id(player_id)
 			
 			var generated_map: Map = map_generator.generate()
-			print(generated_map)
 
 			# set_map on server
 			sess.set_map(generated_map)
@@ -300,9 +298,9 @@ func _start_session_game():
 @rpc("authority", "call_remote", "reliable") # client callback
 func _start_session_game_processed(success: bool):
 	if success:
-		print("[CLIENT-RESPONSE] Starting session game succeded.")
+		print("[CLIENT] Starting session game succeded.")
 	else:
-		print("[CLIENT-RESPONSE] Starting session game failed.")
+		print("[CLIENT] Starting session game failed.")
 		
 	start_session_game_processed.emit(success)
 
@@ -316,7 +314,6 @@ func _session__add_player(id: int, player_dict: Dictionary[StringName, Variant])
 		
 @rpc("authority", "call_remote", "reliable") # other room clients
 func _session__start_game():
-		print("[CLIENT-SESSION] Start Game")
 		session.start_game()
 
 @rpc("authority", "call_remote", "reliable") # other room clients
@@ -369,6 +366,7 @@ func _on_server_disconnected():
 ## UTILS
 func _connected_to_server() -> bool:
 	return multiplayer.multiplayer_peer is ENetMultiplayerPeer and multiplayer.multiplayer_peer.get_connection_status() == MultiplayerPeer.CONNECTION_CONNECTED
+
 
 func set_session(sess: Session):
 	session = sess
