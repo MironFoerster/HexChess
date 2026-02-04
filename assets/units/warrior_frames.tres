@@ -1,0 +1,21 @@
+[gd_resource type="SpriteFrames" load_steps=3 format=3 uid="uid://j3avyxg6drxa"]
+
+[ext_resource type="Texture2D" uid="uid://cjpif1xon7tsw" path="res://assets/units/roguelikeChar_transparent.png" id="1_xuhir"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_djr4y"]
+atlas = ExtResource("1_xuhir")
+region = Rect2(0, 187, 16, 16)
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_djr4y")
+}, {
+"duration": 1.0,
+"texture": null
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
