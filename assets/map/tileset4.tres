@@ -1,0 +1,22 @@
+[gd_resource type="TileSet" load_steps=3 format=3 uid="uid://8vvolw0a2rof"]
+
+[ext_resource type="Texture2D" uid="uid://cuw6kivhtqps5" path="res://assets/map/tileset4.png" id="1_avjor"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_so3nh"]
+texture = ExtResource("1_avjor")
+texture_region_size = Vector2i(160, 160)
+0:0/animation_columns = 8
+0:0/animation_frame_0/duration = 1.0
+0:0/animation_frame_1/duration = 1.0
+0:0/animation_frame_2/duration = 1.0
+0:0/animation_frame_3/duration = 1.0
+0:0/animation_frame_4/duration = 1.0
+0:0/animation_frame_5/duration = 1.0
+0:0/animation_frame_6/duration = 1.0
+0:0/animation_frame_7/duration = 1.0
+0:0/0 = 0
+
+[resource]
+tile_shape = 3
+tile_size = Vector2i(120, 120)
+sources/0 = SubResource("TileSetAtlasSource_so3nh")
