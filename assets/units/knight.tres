@@ -1,13 +1,13 @@
 [gd_resource type="SpriteFrames" load_steps=4 format=3 uid="uid://udqpo2d7ucom"]
 
-[ext_resource type="Texture2D" uid="uid://cjpif1xon7tsw" path="res://assets/units/roguelikeChar_transparent.png" id="1_byiur"]
+[ext_resource type="Texture2D" uid="uid://cjpif1xon7tsw" path="res://assets/units/roguelikeChar_transparent.png" id="1_cxp2c"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_yaih6"]
-atlas = ExtResource("1_byiur")
+atlas = ExtResource("1_cxp2c")
 region = Rect2(0, 187, 16, 16)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_j2a3p"]
-atlas = ExtResource("1_byiur")
+atlas = ExtResource("1_cxp2c")
 region = Rect2(17, 187, 16, 16)
 
 [resource]

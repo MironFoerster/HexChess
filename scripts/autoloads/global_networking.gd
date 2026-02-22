@@ -21,7 +21,7 @@ signal join_private_room_processed(success: bool)
 signal start_session_game_processed(success: bool)
 
 var ip_config := preload("res://scripts/database_controller.gd")
-var server_ip = "192.168.68.102"
+var server_ip = "131.159.216.137"#"192.168.68.102"
 var port = 3000
 var max_connected_players = 20
 
@@ -69,7 +69,7 @@ func _connect_to_server(on_success: Callable, on_failure: Callable): #
 
 ### NICKNAME ###
 func request_nickname_user(nickname: String): # client request
-	print("[CLIENT] Start nicknaming player: ", nickname)
+	print("[CLIENT-REQUEST] Nickname player: ", nickname)
 	if _connected_to_server():
 		print("[CLIENT] Already connected.")
 		# call _nickname_user rpc on server
@@ -101,11 +101,9 @@ func _nickname_processed(success: bool, player_dict: Dictionary[StringName, Vari
 	ident_processed.emit(success)
 
 
-
-
 ### LOGIN ###
 func request_login_user(username: String, password: String): # client request
-	print("[CLIENT] Start logging in player: ", username)
+	print("[CLIENT-REQUEST] Log in player: ", username)
 	if _connected_to_server():
 		print("[CLIENT] Already connected.")
 		# call _login_user rpc on server
@@ -139,11 +137,9 @@ func _login_processed(success: bool, player_dict: Dictionary[StringName, Variant
 	ident_processed.emit(success)
 
 
-
-
 ### REGISTER ###
 func request_register_user(username: String, password: String): # client request
-	print("[CLIENT] Start registering player: ", username)
+	print("[CLIENT-REQUEST] Register player: ", username)
 	if _connected_to_server():
 		print("[CLIENT] Already connected.")
 		# call _register_user rpc on server
@@ -175,11 +171,9 @@ func _register_processed(success: bool, player_dict: Dictionary[StringName, Vari
 	ident_processed.emit(success)
 
 
-
-
 ### CREATE PRIVATE ROOM ###
 func request_create_private_room(): # client request
-	print("[CLIENT] Start creating private room: ")
+	print("[CLIENT-REQUEST] Create private room.")
 	if _connected_to_server():
 		_create_private_room.rpc_id(1)
 	else:
@@ -207,11 +201,9 @@ func _create_private_room_processed(success: bool, session_dict: Dictionary[Stri
 	create_private_room_processed.emit(success)
 
 
-
-
 ### JOIN PRIVATE ROOM ###
 func request_join_private_room(code: int): # client request
-	print("[CLIENT] Start joining private room with code: ", code)
+	print("[CLIENT-REQUEST] Join private room with code: ", code)
 	if _connected_to_server():
 		_join_private_room.rpc_id(1, code)
 	else:
@@ -246,21 +238,22 @@ func _join_private_room_processed(success: bool, session_dict: Dictionary[String
 		
 	join_private_room_processed.emit(success)
 
-# TODO: make all server rpcs "failable"
-@rpc("authority", "call_remote", "reliable") # client callback
-func _request_processed(request_name: String, success: bool, handler: Callable, handler_args: Array, processed_signal: Signal):
-	if success:
-		print("[CLIENT] "+request_name+" succeded: ", handler_args)
-	else:
-		print("[CLIENT] "+request_name+" failed.")
-	if handler:
-		handler.callv(handler_args)
-		
-	processed_signal.emit(success)
+## TODO: make all server rpcs "failable"
+#@rpc("authority", "call_remote", "reliable") # client callback
+#func _request_processed(request_name: String, success: bool, handler: Callable, handler_args: Array, processed_signal: Signal):
+	#if success:
+		#print("[CLIENT] "+request_name+" succeded: ", handler_args)
+	#else:
+		#print("[CLIENT] "+request_name+" failed.")
+	#if handler:
+		#handler.callv(handler_args)
+		#
+	#processed_signal.emit(success)
 
-### Start SESSION GAME ###
+
+### START SESSION GAME ###
 func request_start_session_game(mode_name: String = ""): # client request
-	print("[CLIENT] Start session game.")
+	print("[CLIENT-REQUEST] Start session game.")
 	if mode_name != "":
 		session.mode_name = mode_name
 	
@@ -269,7 +262,7 @@ func request_start_session_game(mode_name: String = ""): # client request
 	elif _connected_to_server(): # type == private online/public online
 		_start_session_game.rpc_id(1)
 	else:
-		print("[CLIENT] Abort: online session but not connected to server.")
+		push_error("[CLIENT] Abort: online session but not connected to server.")
 
 @rpc("any_peer", "call_remote", "reliable") # server handler
 func _start_session_game():
@@ -305,6 +298,50 @@ func _start_session_game_processed(success: bool):
 	start_session_game_processed.emit(success)
 
 
+### EXECUTE COMMAND ### TODO
+func request_execute_command(command: Command): # client request
+	print("[CLIENT-REQUEST] Execute command.")
+	
+	if session.type == "local":
+		pass
+		# TODO: is this the right place to coordinate local perform action? how?
+	elif _connected_to_server(): # type == private online/public online
+		_execute_command.rpc_id(1, command.to_dict())
+	else:
+		push_error("[CLIENT] Abort: online session but not connected to server.")
+
+@rpc("any_peer", "call_remote", "reliable") # server handler
+func _execute_command(command_dict: Dictionary[StringName, Variant]):
+	var sender_id = multiplayer.get_remote_sender_id()
+	
+	for sess in sessions:
+		if sender_id in sess.players.keys():
+			var success = true
+			_execute_command_processed.rpc_id(sender_id, success)
+			
+			# perform action on server
+			
+			
+			# perform action on all player clients
+			for player_id in sess.players.keys():
+				_session__apply_effects.rpc_id(player_id, effect_dicts)
+			
+			break
+
+@rpc("authority", "call_remote", "reliable") # client callback
+func _execute_command_processed(success: bool):
+	if success:
+		print("[CLIENT-RESULT] Perform action succeded.")
+	else:
+		print("[CLIENT-RESULT] Perform action failed.")
+		
+	#start_session_game_processed.emit(success)
+
+
+
+
+
+
 
 ### RPC-WRAPPERS FOR UPDATE-METHODS OF THE CLIENT-SESSION ###
 ### Used by the server to directly update a clients session, calls update methods on the client session
@@ -321,8 +358,17 @@ func _session__set_map(map_dict: Dictionary[Vector2i, Variant]):
 		session.set_map(Map.from_dict(map_dict))
 
 @rpc("authority", "call_remote", "reliable") # other room clients
-func _session__perform_unit_action(unit_id: int, action_dict: Dictionary[StringName, Variant]):
-		session.perform_unit_action(unit_id, Action.from_dict(action_dict))
+func _session__apply_effects(effect_dicts: Array):
+		var effects: Array[Effect] = []
+		for effect_dict in effect_dicts:
+			effects.append(Effect.from_dict(effect_dict))
+		session.apply_effects(effects)
+
+
+
+
+
+
 
 
 

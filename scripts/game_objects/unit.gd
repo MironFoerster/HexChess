@@ -1,10 +1,13 @@
 extends Object
 class_name Unit
 
+var id: int
+var coords: Vector2i
 var unit_type: String
 var feature: String
 var status: Array[Status] = []
 var items: Array[Item] = []
+
 
 func _init(_unit_type: String = "", _feature: String = "", _status: Array[Status] = [], _items: Array[Item] = []):
 	unit_type = _unit_type

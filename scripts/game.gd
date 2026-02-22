@@ -14,7 +14,7 @@ func _ready():
 func _on_session_set():
 	GlobalNetworking.session.game_started.connect(_on_game_started)
 	GlobalNetworking.session.map_updated.connect(_on_map_updated)
-	GlobalNetworking.session.action_performed.connect(_on_action_performed)
+	GameManager.session.effects_applied.connect(_on_effects_applied)
 	
 func _on_game_started():
 	print("Game started!")
@@ -25,10 +25,14 @@ func _on_map_updated():
 	print("Map updated!")
 	_rebuild_map()
 	
+func _on_effects_applied(root_effect: Effect):
+	print("Effects Applied!")
+	_apply_effect(root_effect)
+	
 func _start_game_setup():
 	pass
 
-func _on_action_performed(unit: Unit, action: Action, derived_effects: Array[Effect]):
+func _apply_effect(effect: Effect):
 	pass#TODO: perform actions
 	
 func _rebuild_game_scene():
@@ -55,18 +59,18 @@ func _rebuild_units():
 		unit_node.initialize(unit)
 		units_node.add_child(unit_node)
 
-func spawn_unit(unit_type: String, owner_id: int, coordinates: Vector2) -> Node3D:
+func spawn_unit(unit_type: String, owner_id: int, coordinates: Vector2) -> Signal:
 	
 	if not unit_type in DataCatalog.units.keys():
 		print("Unit type not found:", unit_type)
-		return
+		return get_tree().create_timer(1.0).timeout
 		
 	var unit_instance: Node3D = unit_scene.instantiate()
 	unit_instance.initialize(unit_type, owner_id, coordinates)
 	#unit_instance.call_deferred("set_name", "Piece")
 	units_node.add_child(unit_instance)
 	
-	return unit_instance
+	return get_tree().create_timer(1.0).timeout
 	
 func _on_end_turn_button_pressed() -> void:
 	GlobalNetworking.request_end_turn()

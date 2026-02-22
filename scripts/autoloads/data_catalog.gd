@@ -1,10 +1,10 @@
-# scripts/game_database.gd
 extends Node
 
 var abilities: Dictionary[StringName, Resource] = {} #AbilityData
 var units: Dictionary[StringName, Resource] = {} #UnitData
 var items: Dictionary[StringName, Resource] = {} #ItemData
 var terrains: Dictionary[StringName, Resource] = {} #TerrainData
+var actions: Dictionary[StringName, Resource] = {} #ActionData
 
 func _ready():
 	# Load all resources into the dictionaries
@@ -12,6 +12,7 @@ func _ready():
 	units = _load_entries("res://data/units")
 	items = _load_entries("res://data/items")
 	terrains = _load_entries("res://data/terrains")
+	actions = _load_entries("res://data/actions")
 
 func _load_entries(path: String) -> Dictionary[StringName, Resource]:
 	var dict: Dictionary[StringName, Resource] = {}
