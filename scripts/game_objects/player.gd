@@ -5,6 +5,8 @@ var name: String
 var is_temp: bool
 var rank: int
 
+var id_token: int
+
 func _init(_name: String = "", _is_temp: bool = true, _rank: int = 0):
 	name = _name
 	is_temp = _is_temp

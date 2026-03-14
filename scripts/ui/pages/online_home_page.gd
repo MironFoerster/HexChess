@@ -1,15 +1,8 @@
 extends Control
 
 
-signal request_page_change(page_name)
-
-
-func _ready() -> void:
-	GlobalNetworking.create_private_room_processed.connect(_on_create_private_room_processed)
-	GlobalNetworking.join_private_room_processed.connect(_on_join_private_room_processed)
-
 func _on_options_button_pressed() -> void:
-	request_page_change.emit("options")
+	SceneManager.page_transition_to("options")
 
 
 func _on_exit_button_pressed() -> void:
@@ -17,28 +10,14 @@ func _on_exit_button_pressed() -> void:
 
 
 func _on_play_local_button_pressed() -> void:
-	request_page_change.emit("local_home")
+	SceneManager.page_transition_to("local_home")
 	# TODO: do this on game start: GlobalAudio.switch_music_to("game")
 
 func _on_create_button_pressed() -> void:
-	GlobalNetworking.request_create_private_room()
-
-func _on_create_private_room_processed(success):
-	if success:
-		request_page_change.emit("private_lobby_admin")
-	else:
-		pass
-
+	GlobalNetworking.create_private_room()
 
 func _on_join_button_pressed() -> void:
-	GlobalNetworking.request_join_private_room(int($JoinOrCreateContainer/JoinCodeInput.text))
-
-func _on_join_private_room_processed(success):
-	if success:
-		request_page_change.emit("private_lobby_joined")
-	else:
-		pass
-
+	GlobalNetworking.join_private_room(int($JoinOrCreateContainer/JoinCodeInput.text))
 
 func _on_join_code_input_text_changed(new_text: String) -> void:
 	var regex := RegEx.new()

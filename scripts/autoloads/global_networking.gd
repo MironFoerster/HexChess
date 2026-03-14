@@ -1,59 +1,26 @@
 extends Node
 
-# variables only used by the server instance
-var database: Database
-var map_generator: MapGenerator
-var connected_players: Dictionary[int, Player] = {} # 3: Player.new("bob")
-var sessions: Array[Session] = [] # Session.new("private", 3, {3: Player.new("bob")}, 123456, "Session2")
 
-# variables only used by the client instance
-var local_player: Player = null
-var session: Session = null
-
-# These signals can be connected to by a UI lobby scene or the game scene.
-signal player_connected(peer_id: int, player_info)
-signal player_disconnected(peer_id: int)
-signal server_disconnected
-signal ident_processed(success: bool)
-signal session_set()
-signal create_private_room_processed(success: bool)
-signal join_private_room_processed(success: bool)
-signal start_session_game_processed(success: bool)
-
-var ip_config := preload("res://scripts/database_controller.gd")
-var server_ip = "131.159.216.137"#"192.168.68.102"
+var server_ip = "192.168.2.126"#131.159.216.137"#"192.168.68.102"
 var port = 3000
-var max_connected_players = 20
-
-
-var _connect_success_callback = null
-var _connect_failure_callback = null
-
-# Called when the node enters the scene tree for the first time.
-func _ready() -> void: # runs on both client and server
-	# signals for server and clients
-	multiplayer.peer_connected.connect(_on_player_connected)
-	multiplayer.peer_disconnected.connect(_on_player_disconnected)
-	# signals only for clients
-	multiplayer.connected_to_server.connect(_on_connect_success)
-	multiplayer.connection_failed.connect(_on_connect_failure)
-	multiplayer.server_disconnected.connect(_on_server_disconnected)
+var max_connected_peers = 20
 
 # runs at startup on the instance that is run as server, see main.gd
 func start_server():
 	var peer = ENetMultiplayerPeer.new()
 	peer.set_bind_ip("0.0.0.0")
-	var err = peer.create_server(port, max_connected_players)
+	var err = peer.create_server(port, max_connected_peers
+)
 	if err != OK:
 		print("Failed to start server: %d" % err)
 		return
 	multiplayer.multiplayer_peer = peer
 	print("Server started on port %d" % port)
-	database = Database.new()
-	map_generator = MapGenerator.new()
+	ServerManager.initialize_server()
 
 # runs once user decides to use online features, creates a client on the users instance
-func _connect_to_server(on_success: Callable, on_failure: Callable): # 
+func connect_to_server():
+	GameManager.initialize_client()
 	var peer = ENetMultiplayerPeer.new()
 	var err = peer.create_client(server_ip, port)
 	if err != OK:
@@ -61,359 +28,251 @@ func _connect_to_server(on_success: Callable, on_failure: Callable): #
 		return
 	print("Connecting to server...")
 	multiplayer.multiplayer_peer = peer
-	_connect_success_callback = on_success
-	_connect_failure_callback = on_failure
 
 
 
 
-### NICKNAME ###
-func request_nickname_user(nickname: String): # client request
-	print("[CLIENT-REQUEST] Nickname player: ", nickname)
+
+
+
+### BASE COMMUNICATION METHODS ###
+
+func send_to_server(type: String, data: Dictionary) -> bool: # client request
+	print("[CLIENT-SENT] Type: ", type)
+	print("[CLIENT-SENT] Data: ", data)
+	
+	var payload = {"type": type, "data": data}
+	
 	if _connected_to_server():
-		print("[CLIENT] Already connected.")
-		# call _nickname_user rpc on server
-		_nickname_user.rpc_id(1, nickname)
+		print("[CLIENT] Connected. Calling RPC.")
+		# call _handle_on_server rpc on server
+		_handle_on_server.rpc_id(1, payload)
+		return true
 	else:
-		# first connect to server before rpc call
-		_connect_to_server(func(): _nickname_user.rpc_id(1, nickname),
-						func(): ident_processed.emit(false))
+		print("[CLIENT] Not connected. Aborting RPC.")
+		return false
 
 @rpc("any_peer", "call_remote", "reliable")  # server handler
-func _nickname_user(nickname: String):
-	print("[SERVER] Nicknaming client: ", nickname)
+func _handle_on_server(payload: Dictionary):
+	print("[SERVER-RECEIVED] Payload: ", payload)
 	var sender_id = multiplayer.get_remote_sender_id()
-	var player = Player.new(nickname, true)
 	
-	connected_players[sender_id] = player
-	_nickname_processed.rpc_id(sender_id, true, player.to_dict())
+	server_handlers[payload.type].call(sender_id, payload.data)
+
+func send_to_clients(receiver_ids: Array[int], type: String, data: Dictionary): # server response/broadcast
+	print("[SERVER-SENT] Type: ", type)
+	print("[SERVER-SENT] Data: ", data)
+	print("[SERVER-SENT] To: ", receiver_ids)
+	
+	var payload = {"type": type, "data": data}
+	
+	for receiver_id in receiver_ids:
+		_handle_on_client.rpc_id(receiver_id, payload)
+
+@rpc("authority", "call_remote", "reliable")  # client handler
+func _handle_on_client(payload: Dictionary):
+	print("[CLIENT-RECEIVED] Payload: ", payload)
+	
+	client_handlers[payload.type].call(payload.data)
 
 
-@rpc("authority", "call_remote", "reliable")  # client callback
-func _nickname_processed(success: bool, player_dict: Dictionary[StringName, Variant] = {}):
-	if success:
-		print("[CLIENT] Nicknaming player succeded: ", player_dict)
-		local_player = Player.from_dict(player_dict)
-	else:
-		print("[CLIENT] Nicknaming player failed.")
-		local_player = null
-	
-	ident_processed.emit(success)
+
+
+
+
+
+
+### REQUEST-RESPONSE METHODS ###
+
+### NICKNAME ###
+func nickname_player(nickname: String):
+	send_to_server("nickname_player", {
+		"nickname": nickname
+	})
+
+func handle_nickname_player(sender_id: int, data: Dictionary):
+	ServerManager.handle_nickname_player(sender_id, data.nickname)
 
 
 ### LOGIN ###
-func request_login_user(username: String, password: String): # client request
-	print("[CLIENT-REQUEST] Log in player: ", username)
-	if _connected_to_server():
-		print("[CLIENT] Already connected.")
-		# call _login_user rpc on server
-		_login_user.rpc_id(1, username, password)
-	else:
-		# first connect to server before rpc call
-		_connect_to_server(func(): _login_user.rpc_id(1, username, password),
-						func(): ident_processed.emit(false))
+func login_player(username: String, password: String):
+	send_to_server("login_player", {
+		"username": username,
+		"password": password,
+	})
 
-@rpc("any_peer", "call_remote", "reliable")  # server handler
-func _login_user(username: String, password: String):
-	print("[SERVER] Logging in client: ", username)
-	var sender_id = multiplayer.get_remote_sender_id()
-	if database.validate_password(username, password):
-		var player = Player.new(username, false, database.get_user_rank(username))
-		
-		connected_players[sender_id] = player
-		_login_processed.rpc_id(sender_id, true, player.to_dict())
-	else:
-		_login_processed.rpc_id(sender_id, false)
-		
-@rpc("authority", "call_remote", "reliable")  # client callback
-func _login_processed(success: bool, player_dict: Dictionary[StringName, Variant] = {}):
-	if success:
-		print("[CLIENT] Logging in player succeded: ", player_dict)
-		local_player = Player.from_dict(player_dict)
-	else:
-		print("[CLIENT] Logging in player failed.")
-		local_player = null
-	
-	ident_processed.emit(success)
-
+func handle_login_player(sender_id: int, data: Dictionary):
+	ServerManager.handle_login_player(sender_id, data.username, data.password)
 
 ### REGISTER ###
-func request_register_user(username: String, password: String): # client request
-	print("[CLIENT-REQUEST] Register player: ", username)
-	if _connected_to_server():
-		print("[CLIENT] Already connected.")
-		# call _register_user rpc on server
-		_register_user.rpc_id(1, username, password)
-	else:
-		# first connect to server before rpc call
-		_connect_to_server(func(): _register_user.rpc_id(1, username, password),
-						func(): ident_processed.emit(false))
+func register_player(username: String, password: String):
+	send_to_server("register_player", {
+		"username": username,
+		"password": password,
+	})
 
-@rpc("any_peer", "call_remote", "reliable")  # server handler
-func _register_user(username: String, password: String):
-	print("[SERVER] Registering client: ", username)
-	var sender_id = multiplayer.get_remote_sender_id()
-	database.add_user(username, password)
-	var player = Player.new(username, false, database.get_user_rank(username))
-	
-	connected_players[sender_id] = player
-	_register_processed.rpc_id(sender_id, true, player.to_dict())
+func handle_register_player(sender_id: int, data: Dictionary):
+	ServerManager.handle_register_player(sender_id, data.username, data.password)
 
-@rpc("authority", "call_remote", "reliable")  # client callback
-func _register_processed(success: bool, player_dict: Dictionary[StringName, Variant] = {}):
-	if success:
-		print("[CLIENT] Registering player succeded: ", player_dict)
-		local_player = Player.from_dict(player_dict)
-	else:
-		print("[CLIENT] Registering player failed.")
-		local_player = null
+
+### IDENTIFICATION PROCESSED ### (nickname/login/register)
+func identify_player_processed(to: Array[int], success: bool, player: Player = null):
+	send_to_clients(to, "identify_player_processed", {
+		"success": success,
+		"player_dict": player.to_dict() if player != null else {}
+	})
 	
-	ident_processed.emit(success)
+func handle_identify_player_processed(data: Dictionary):
+	GameManager.handle_identify_player_processed(data.success, Player.from_dict(data.player_dict))
 
 
 ### CREATE PRIVATE ROOM ###
-func request_create_private_room(): # client request
-	print("[CLIENT-REQUEST] Create private room.")
-	if _connected_to_server():
-		_create_private_room.rpc_id(1)
-	else:
-		print("[CLIENT] Abort: not connected to server.")
+func create_private_room():
+	send_to_server("create_private_room", {})
 
-@rpc("any_peer", "call_remote", "reliable")  # server handler
-func _create_private_room():
-	print("[SERVER] Creating private room.")
-	var sender_id = multiplayer.get_remote_sender_id()
-	var game_code = 123456
-	var sess = Session.new("private", sender_id, {sender_id: connected_players[sender_id]}, game_code)
-	
-	sessions.append(sess)
-	_create_private_room_processed.rpc_id(sender_id, true, sess.to_dict())
+func handle_create_private_room(sender_id: int, data: Dictionary):
+	ServerManager.handle_create_private_room(sender_id)
 
-@rpc("authority", "call_remote", "reliable")  # client callback
-func _create_private_room_processed(success: bool, session_dict: Dictionary[StringName, Variant] = {}):
-	if success:
-		print("[CLIENT] Creating private room succeded: ", session_dict)
-		set_session(Session.from_dict(session_dict))
-	else:
-		print("[CLIENT] Creating private room failed.")
-		session = null
+func create_private_room_processed(to: Array[int], success: bool, battle: Battle = null):
+	send_to_clients(to, "create_private_room_processed", {
+		"success": success,
+		"battle_dict": battle.to_dict() if battle != null else {}
+	})
 	
-	create_private_room_processed.emit(success)
+func handle_create_private_room_processed(data: Dictionary):
+	GameManager.handle_create_private_room_processed(data.success, Battle.from_dict(data.battle_dict))
 
 
 ### JOIN PRIVATE ROOM ###
-func request_join_private_room(code: int): # client request
-	print("[CLIENT-REQUEST] Join private room with code: ", code)
-	if _connected_to_server():
-		_join_private_room.rpc_id(1, code)
-	else:
-		print("[CLIENT] Abort: not connected to server.")
+func join_private_room(code: int):
+	send_to_server("join_private_room", {
+		"code": code,
+	})
 
-@rpc("any_peer", "call_remote", "reliable") # server handler
-func _join_private_room(code: int):
-	for sess in sessions:
-		if code == sess.game_code:
-			var joined_player_id = multiplayer.get_remote_sender_id()
-			var joined_player = connected_players[joined_player_id]
-			
-			var success = true
-			_join_private_room_processed.rpc_id(joined_player_id, success, sess.to_dict())
-			
-			# update session on server
-			sess.add_player(joined_player_id, joined_player)
-			# update session on all clients
-			if success:
-				for player_id in sess.players.keys():
-					_session__add_player.rpc_id(player_id, joined_player_id, joined_player.to_dict())
-			break
-					
-@rpc("authority", "call_remote", "reliable") # client callback
-func _join_private_room_processed(success: bool, session_dict: Dictionary[StringName, Variant]):
-	if success:
-		print("[CLIENT] Joining private room succeded: ", session_dict)
-		set_session(Session.from_dict(session_dict))
-	else:
-		print("[CLIENT] Joining private room failed.")
-		session = null
-		
-	join_private_room_processed.emit(success)
+func handle_join_private_room(sender_id: int, data: Dictionary):
+	ServerManager.handle_join_private_room(sender_id, data.code)
 
-## TODO: make all server rpcs "failable"
-#@rpc("authority", "call_remote", "reliable") # client callback
-#func _request_processed(request_name: String, success: bool, handler: Callable, handler_args: Array, processed_signal: Signal):
-	#if success:
-		#print("[CLIENT] "+request_name+" succeded: ", handler_args)
-	#else:
-		#print("[CLIENT] "+request_name+" failed.")
-	#if handler:
-		#handler.callv(handler_args)
-		#
-	#processed_signal.emit(success)
-
-
-### START SESSION GAME ###
-func request_start_session_game(mode_name: String = ""): # client request
-	print("[CLIENT-REQUEST] Start session game.")
-	if mode_name != "":
-		session.mode_name = mode_name
+func join_private_room_processed(to: Array[int], success: bool, battle: Battle = null):
+	send_to_clients(to, "join_private_room_processed", {
+		"success": success,
+		"battle_dict": battle.to_dict() if battle != null else {}
+	})
 	
-	if session.type == "local":
-		session.start_game()
-	elif _connected_to_server(): # type == private online/public online
-		_start_session_game.rpc_id(1)
-	else:
-		push_error("[CLIENT] Abort: online session but not connected to server.")
+func handle_join_private_room_processed(data: Dictionary):
+	GameManager.handle_join_private_room_processed(data.success, Battle.from_dict(data.battle_dict))
 
-@rpc("any_peer", "call_remote", "reliable") # server handler
-func _start_session_game():
-	var sender_id = multiplayer.get_remote_sender_id()
-	for sess in sessions:
-		if sender_id == sess.admin_id:
-			var success = true
-			_start_session_game_processed.rpc_id(sender_id, success)
-			
-			# start game on server
-			sess.start_game()
-			
-			# start game on all player clients
-			for player_id in sess.players.keys():
-				_session__start_game.rpc_id(player_id)
-			
-			var generated_map: Map = map_generator.generate()
+### START BATTLE ###
+func start_battle(code: int):
+	send_to_server("start_battle", {})
 
-			# set_map on server
-			sess.set_map(generated_map)
-			
-			# set_map on all player clients
-			for player_id in sess.players.keys():
-				_session__set_map.rpc_id(player_id, generated_map.to_dict())
+func handle_start_battle(sender_id: int, data: Dictionary):
+	ServerManager.handle_start_battle(sender_id)
 
-@rpc("authority", "call_remote", "reliable") # client callback
-func _start_session_game_processed(success: bool):
-	if success:
-		print("[CLIENT] Starting session game succeded.")
-	else:
-		print("[CLIENT] Starting session game failed.")
-		
-	start_session_game_processed.emit(success)
+func start_battle_processed(to: Array[int], success: bool):
+	send_to_clients(to, "start_battle_processed", {
+		"success": success,
+	})
 
-
-### EXECUTE COMMAND ### TODO
-func request_execute_command(command: Command): # client request
-	print("[CLIENT-REQUEST] Execute command.")
+func handle_start_battle_processed(data: Dictionary):
+	pass
 	
-	if session.type == "local":
-		pass
-		# TODO: is this the right place to coordinate local perform action? how?
-	elif _connected_to_server(): # type == private online/public online
-		_execute_command.rpc_id(1, command.to_dict())
-	else:
-		push_error("[CLIENT] Abort: online session but not connected to server.")
+### SUBMIT COMMAND ###
+func submit_command(command: Command):
+	send_to_server("submit_command", {
+		"command_dict": command.to_dict(),
+	})
 
-@rpc("any_peer", "call_remote", "reliable") # server handler
-func _execute_command(command_dict: Dictionary[StringName, Variant]):
-	var sender_id = multiplayer.get_remote_sender_id()
+func handle_submit_command(sender_id: int, data: Dictionary):
+	ServerManager.handle_submit_command(sender_id, Command.from_dict(data.command_dict))
+
+func submit_command_processed(to: Array[int], success: bool):
+	send_to_clients(to, "submit_command_processed", {
+		"success": success,
+	})
 	
-	for sess in sessions:
-		if sender_id in sess.players.keys():
-			var success = true
-			_execute_command_processed.rpc_id(sender_id, success)
-			
-			# perform action on server
-			
-			
-			# perform action on all player clients
-			for player_id in sess.players.keys():
-				_session__apply_effects.rpc_id(player_id, effect_dicts)
-			
-			break
+func handle_submit_command_processed(data: Dictionary):
+	pass
 
-@rpc("authority", "call_remote", "reliable") # client callback
-func _execute_command_processed(success: bool):
-	if success:
-		print("[CLIENT-RESULT] Perform action succeded.")
-	else:
-		print("[CLIENT-RESULT] Perform action failed.")
-		
-	#start_session_game_processed.emit(success)
+### END TURN ###
+func end_turn():
+	send_to_server("end_turn", {})
+
+func handle_end_turn(sender_id: int, data: Dictionary):
+	ServerManager.handle_end_turn(sender_id)
 
 
 
 
 
+### SERVER TO CLIENT UPDATE METHODS ###
+### Used by the server to directly update a clients session, calls update methods on the client battle
+# TODO maybe directly call battle functions, not via game manager
+
+### ADD PLAYER ###
+func battle__add_player(to: Array[int], player_id: int, player: Player = null):
+	send_to_clients(to, "battle__add_player", {
+		"player_id": player_id,
+		"player_dict": player.to_dict() if player != null else {}
+	})
+	
+func handle_battle__add_player(data: Dictionary):
+	GameManager.handle_add_player_to_battle(data.player_id, Player.from_dict(data.player_dict))
+
+### START BATTLE ###
+func battle__start(to: Array[int]):
+	send_to_clients(to, "battle__start", {})
+	
+func handle_battle__start(data: Dictionary):
+	GameManager.handle_start_battle()
+
+### SET MAP ###
+func battle__set_map(to: Array[int], map: Map = null):
+	send_to_clients(to, "battle__set_map", {
+		"map_dict": map.to_dict() if map != null else {}
+	})
+	
+func handle_battle__set_map(data: Dictionary):
+	GameManager.handle_set_battle_map(Map.from_dict(data.map_dict))
+
+### EXECUTE COMMAND ###
+func battle__execute_command(to: Array[int], command: Command = null):
+	send_to_clients(to, "battle__execute_command", {
+		"command_dict": command.to_dict() if command != null else {}
+	})
+	
+func handle_battle__execute_command(data: Dictionary):
+	GameManager.handle_execute_command(Command.from_dict(data.command_dict))
 
 
-### RPC-WRAPPERS FOR UPDATE-METHODS OF THE CLIENT-SESSION ###
-### Used by the server to directly update a clients session, calls update methods on the client session
-@rpc("authority", "call_remote", "reliable") # other room clients
-func _session__add_player(id: int, player_dict: Dictionary[StringName, Variant]):
-		session.add_player(id, Player.from_dict(player_dict))
-		
-@rpc("authority", "call_remote", "reliable") # other room clients
-func _session__start_game():
-		session.start_game()
-
-@rpc("authority", "call_remote", "reliable") # other room clients
-func _session__set_map(map_dict: Dictionary[Vector2i, Variant]):
-		session.set_map(Map.from_dict(map_dict))
-
-@rpc("authority", "call_remote", "reliable") # other room clients
-func _session__apply_effects(effect_dicts: Array):
-		var effects: Array[Effect] = []
-		for effect_dict in effect_dicts:
-			effects.append(Effect.from_dict(effect_dict))
-		session.apply_effects(effects)
 
 
 
 
+### HANDLER REGISTRIES ###
 
-
-
-
-
-### HANDLERS FOR MULTIPLAYER EVENTS ###
-func _on_player_connected(id):
-	if multiplayer.is_server():
-		print("A client connected.")
-	elif id != multiplayer.get_unique_id():
-		print("Another peer connected.")
-
-func _on_player_disconnected(id):
-	#TODO: handle player exit smooth on all other peers
-	if multiplayer.is_server():
-		print("A client disconnected.")
-		connected_players.erase(id)
-	else:
-		print("Another peer disconnected.")
-	#players.erase(id)
-	player_disconnected.emit(id)
-
-func _on_connect_success():
-	print("Connected to server!")
-	if _connect_success_callback:
-		_connect_success_callback.call()
-		_connect_success_callback = null
-
-func _on_connect_failure():
-	print("Failed to connect to server")
-	if _connect_failure_callback:
-		_connect_failure_callback.call()
-		_connect_failure_callback = null
-
-func _on_server_disconnected():
-	multiplayer.multiplayer_peer = null
-	print("Server disconnected...trying to reconnect...")
-	server_disconnected.emit() #TODO: make sure every place that listenes to networking signals is never instanciated on the server
-	_connect_to_server(func(): print("reconnected!"),
-						func(): print("failed to reconnect")) #TODO: maybe different callbacks?
+var server_handlers: Dictionary[StringName, Callable] = {
+	"nickname_player": handle_nickname_player,
+	"login_player": handle_login_player,
+	"register_player": handle_register_player,
+	"create_private_room": handle_create_private_room,
+	"join_private_room": handle_join_private_room,
+	"start_battle": handle_start_battle,
+	"submit_command": handle_submit_command,
+	"end_turn": handle_end_turn,
+}
+var client_handlers: Dictionary[StringName, Callable] = {
+	"identify_player_processed": handle_identify_player_processed,
+	"create_private_room_processed": handle_create_private_room_processed,
+	"join_private_room_processed": handle_join_private_room_processed,
+	"start_battle_processed": handle_start_battle_processed,
+	"submit_command_processed": handle_submit_command_processed,
+	"battle__add_player": handle_battle__add_player,
+	"battle__start": handle_battle__start,
+	"battle__set_map": handle_battle__set_map,
+	"battle__execute_command": handle_battle__execute_command,
+}
 
 
 ## UTILS
 func _connected_to_server() -> bool:
 	return multiplayer.multiplayer_peer is ENetMultiplayerPeer and multiplayer.multiplayer_peer.get_connection_status() == MultiplayerPeer.CONNECTION_CONNECTED
-
-
-func set_session(sess: Session):
-	session = sess
-	session_set.emit()

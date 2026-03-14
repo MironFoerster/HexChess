@@ -1,7 +1,5 @@
 extends Control
 
-signal request_page_change(page_name)
-
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	pass # Replace with function body.
@@ -17,4 +15,4 @@ func _on_music_toggle_button_toggled(toggled_on: bool) -> void:
 
 func _on_home_button_pressed() -> void:
 	# TODO: decide if local or online home
-	request_page_change.emit("local_home")
+	SceneManager.page_transition_to("local_home")

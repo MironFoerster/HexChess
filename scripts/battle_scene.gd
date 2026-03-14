@@ -9,12 +9,12 @@ var unit_scene = load("res://scenes/game/unit.tscn") as PackedScene
 var units_abilities_cache # TODO put this here or rather directly in session?
 
 func _ready():
-	GlobalNetworking.session_set.connect(_on_session_set)
+	GameManager.active_battle_set.connect(_on_active_battle_set)
 	
-func _on_session_set():
-	GlobalNetworking.session.game_started.connect(_on_game_started)
-	GlobalNetworking.session.map_updated.connect(_on_map_updated)
-	GameManager.session.effects_applied.connect(_on_effects_applied)
+func _on_active_battle_set():
+	GameManager.active_battle.game_started.connect(_on_game_started)
+	GameManager.active_battle.map_updated.connect(_on_map_updated)
+	GameManager.active_battle.effect_tree_applied.connect(_on_effect_tree_applied)
 	
 func _on_game_started():
 	print("Game started!")
@@ -25,15 +25,13 @@ func _on_map_updated():
 	print("Map updated!")
 	_rebuild_map()
 	
-func _on_effects_applied(root_effect: Effect):
-	print("Effects Applied!")
-	_apply_effect(root_effect)
+
+func _on_effect_tree_applied(effect: Effect):
+	print("Applying Effects!")
+	pass#TODO: perform actions
 	
 func _start_game_setup():
 	pass
-
-func _apply_effect(effect: Effect):
-	pass#TODO: perform actions
 	
 func _rebuild_game_scene():
 	_rebuild_map()
@@ -45,8 +43,8 @@ func _get_atlas_coords_from_cell(cell: Cell) -> Vector2i:
 func _rebuild_map():
 	map_node.clear()
 	
-	for coords in GlobalNetworking.session.map.cells.keys():
-		var atlas_coords = DataCatalog.terrains[GlobalNetworking.session.map.cells.get(coords).terrain_type].atlas_coords
+	for coords in GameManager.active_battle.map.cells.keys():
+		var atlas_coords = DataCatalog.terrains[GameManager.active_battle.map.cells.get(coords).terrain_type].atlas_coords
 		map_node.set_cell(coords, 0, atlas_coords)
 	
 func _rebuild_units():
@@ -54,7 +52,7 @@ func _rebuild_units():
 		units_node.remove_child(child)
 		child.queue_free()
 		
-	for unit in GlobalNetworking.session.units:
+	for unit in GameManager.active_battle.units:
 		var unit_node = unit_scene.instantiate()
 		unit_node.initialize(unit)
 		units_node.add_child(unit_node)
@@ -73,4 +71,4 @@ func spawn_unit(unit_type: String, owner_id: int, coordinates: Vector2) -> Signa
 	return get_tree().create_timer(1.0).timeout
 	
 func _on_end_turn_button_pressed() -> void:
-	GlobalNetworking.request_end_turn()
+	GlobalNetworking.end_turn()

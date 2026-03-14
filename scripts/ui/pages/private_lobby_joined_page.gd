@@ -1,20 +1,16 @@
 extends Control
 
 
-signal request_page_change(page_name)
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	$JoinCodeLabel.text = "Game Code: " + str(GlobalNetworking.session.game_code)
-	GlobalNetworking.session.player_added.connect(_on_player_added)
-	GlobalNetworking.session.game_started.connect(_on_game_started)
+	$JoinCodeLabel.text = "Game Code: " + str(GameManager.active_battle.game_code)
+	GameManager.active_battle.player_added.connect(_on_player_added)
 
 
 func _on_player_added():
-	$VBoxContainer/NumPlayersLabel.text = "Number of Players: " + str(GlobalNetworking.session.players.size())
+	$VBoxContainer/NumPlayersLabel.text = "Number of Players: " + str(GameManager.active_battle.players.size())
 
-func _on_game_started():
-	request_page_change.emit("none")
 
 func _on_leave_game_button_pressed() -> void:
-	request_page_change.emit("online_home")
+	SceneManager.page_transition_to("online_home")

@@ -36,6 +36,17 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.708397, 0.57977, 0.552541, 1)
 
+[node name="ConnectToServerButton" type="Button" parent="."]
+layout_mode = 2
+offset_left = 421.0
+offset_top = 157.0
+offset_right = 713.0
+offset_bottom = 186.0
+size_flags_horizontal = 3
+size_flags_vertical = 4
+size_flags_stretch_ratio = 0.2
+text = "first click here to connect to server"
+
 [node name="PlayOnlineContainer" type="VBoxContainer" parent="."]
 layout_mode = 1
 anchors_preset = 8
@@ -239,6 +250,7 @@ layout_mode = 2
 size_flags_vertical = 8
 text = "Play Local"
 
+[connection signal="pressed" from="ConnectToServerButton" to="." method="_on_connect_to_server_button_pressed"]
 [connection signal="pressed" from="PlayOnlineContainer/IdentTabContainer/NicknameContainer/HBoxContainer/NicknameSubmitButton" to="." method="_on_nickname_submit_button_pressed"]
 [connection signal="pressed" from="PlayOnlineContainer/IdentTabContainer/NicknameContainer/NicknameTabLinksContainer/LoginLinkButton" to="." method="_on_login_link_button_pressed"]
 [connection signal="pressed" from="PlayOnlineContainer/IdentTabContainer/NicknameContainer/NicknameTabLinksContainer/RegisterLinkButton" to="." method="_on_register_link_button_pressed"]

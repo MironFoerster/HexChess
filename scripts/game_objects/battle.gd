@@ -21,6 +21,7 @@ var _next_unit_id := 0
 signal player_added(player: Player)
 signal game_started()
 signal map_updated()
+signal effect_tree_applied(effect_tree: Effect)
 
 
 
@@ -38,18 +39,23 @@ func set_map(_map: Map):
 	print("Map set!")
 	map = _map
 	map_updated.emit()
-
-func execute_command(command: Command):
+	
+func submit_command(command: Command):
 	if type == "local":
-		var root_effect: Effect = Effect.new()
-		root_effect.child_effects = _get_command_effects(command)
-		_resolve_effect_tree(root_effect)
-		_apply_effect(root_effect)
-		
+		execute_command(command)
 	elif GlobalNetworking._connected_to_server(): # type == private online/public online
-		GlobalNetworking._execute_command.rpc_id(1, command.to_dict())
+		GlobalNetworking.submit_command(command)
 	else:
 		push_error("[CLIENT] Abort: online battle but not connected to server.")
+
+func execute_command(command: Command) -> Effect:
+	var root_effect: Effect = Effect.new()
+	root_effect.child_effects = _get_command_effects(command)
+	_resolve_effect_tree(root_effect)
+	apply_effect_tree(root_effect)
+	effect_tree_applied.emit(root_effect)
+	return root_effect
+	
 
 func _get_command_effects(command: Command):
 	var effects: Array[Effect] = []
@@ -59,7 +65,7 @@ func _get_command_effects(command: Command):
 	return effects
 
 func _resolve_effect_tree(effect: Effect): # fills in the Effect-Tree IN PLACE
-	_apply_effect(effect)
+	apply_effect_tree(effect)
 	
 	match effect.effect_type:
 		"spawn_unit":
@@ -71,18 +77,27 @@ func _resolve_effect_tree(effect: Effect): # fills in the Effect-Tree IN PLACE
 	for child_effect in effect.child_effects:
 		_resolve_effect_tree(child_effect)
 	
-func _apply_effect(effect: Effect):
+func apply_effect_tree(effect: Effect):
 	print("Applying Effect!")
 	match effect.effect_type:
 		"spawn_unit":
 			_spawn_unit(effect.target_coords, Unit.new(effect.unit_type))
 	
 	for child_effect in effect.child_effects:
-		_apply_effect(child_effect)
+		apply_effect_tree(child_effect)
 
 
 
 
+
+### NETWORKING HANDLERS ###
+func _handle_effect_tree(data: Dictionary):
+	execute_command(Command.from_dict(data.command))
+
+
+
+
+### EFFECT RENDERERS ###
 func _spawn_unit(coords: Vector2i, unit: Unit): # TODO wo wird unit erstellt, wo mit id versehen, wo mit coords, status etc
 	unit.id = _next_unit_id
 	_next_unit_id += 1

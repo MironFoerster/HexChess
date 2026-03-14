@@ -1,16 +1,17 @@
-extends Control
+extends Node
 
-@onready var page_container: Control = $PageContainer
+@onready var page_container: Control = get_tree().current_scene.get_node("UILayer/PageContainer")
+@onready var battle_container: Node2D = get_tree().current_scene.get_node("BattleContainer")
 
 var page_scenes = {
-	"ident": preload("res://scenes/ui/pages/ident_page.tscn"),
-	"online_home": preload("res://scenes/ui/pages/online_home_page.tscn"),
-	"local_home": preload("res://scenes/ui/pages/local_home_page.tscn"),
-	"options": preload("res://scenes/ui/pages/options_page.tscn"),
-	"units": preload("res://scenes/ui/pages/units_page.tscn"),
-	"ingame": preload("res://scenes/ui/pages/ingame_page.tscn"),
-	"private_lobby_joined": preload("res://scenes/ui/pages/private_lobby_joined_page.tscn"),
-	"private_lobby_admin": preload("res://scenes/ui/pages/private_lobby_admin_page.tscn"),
+	"ident": preload("res://scenes/ui/pages/IdentPage.tscn"),
+	"online_home": preload("res://scenes/ui/pages/OnlineHomePage.tscn"),
+	"local_home": preload("res://scenes/ui/pages/LocalHomePage.tscn"),
+	"options": preload("res://scenes/ui/pages/OptionsPage.tscn"),
+	"units": preload("res://scenes/ui/pages/UnitsPage.tscn"),
+	"battle": preload("res://scenes/ui/pages/IngamePage.tscn"),
+	"private_lobby_joined": preload("res://scenes/ui/pages/PrivateLobbyJoinedPage.tscn"),
+	"private_lobby_admin": preload("res://scenes/ui/pages/PrivateLobbyAdminPage.tscn"),
 }
 var cached_pages: = {}
 var current_page: Control
@@ -18,9 +19,9 @@ var tween: Tween
 
 
 func _ready():
-	ui_transition_to("ident")
+	page_transition_to("ident")
 
-func ui_transition_to(name: String, duration: float = 1):
+func page_transition_to(name: String, duration: float = 1):
 	# Cancel any running transition
 	if tween and tween.is_running():
 		tween.kill()
@@ -35,7 +36,6 @@ func ui_transition_to(name: String, duration: float = 1):
 				page_container.add_child(new_page)
 		else:
 			new_page = page_scenes[name].instantiate()
-			new_page.request_page_change.connect(ui_transition_to)
 			cached_pages[name] = new_page
 			page_container.add_child(new_page)
 		
@@ -61,25 +61,6 @@ func ui_transition_to(name: String, duration: float = 1):
 			tween.tween_property(current_page, "modulate:a", 0.0, duration)
 	
 	current_page = new_page
-	
-
-	#if new_page != current_page:
-		#if new_page:
-			#new_page.modulate.a = 0.0
-			#new_page.visible = true
-			#
-		#var old_page = current_page
-		#current_page = new_page
-		#
-		#tween.tween_method(
-			#func(value):
-				#if old_page:
-					#old_page.modulate.a = 1.0 - value
-				#if new_page:
-					#new_page.modulate.a = value,
-			#0.0, 1.0, duration
-		#)
-	
 
 
 func _hide_any_old_pages():

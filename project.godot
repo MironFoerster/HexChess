@@ -20,6 +20,9 @@ GlobalAudio="*res://scripts/autoloads/global_audio.gd"
 GlobalNetworking="*res://scripts/autoloads/global_networking.gd"
 DataCatalog="*res://scripts/autoloads/data_catalog.gd"
 VfxCatalog="*res://scripts/autoloads/vfx_catalog.gd"
+GameManager="*res://scripts/autoloads/game_manager.gd"
+ServerManager="*res://scripts/autoloads/server_manager.gd"
+SceneManager="*res://scripts/autoloads/scene_manager.gd"
 
 [editor_plugins]
 
