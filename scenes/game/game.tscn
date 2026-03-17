@@ -12,14 +12,6 @@ y_sort_enabled = true
 tile_map_data = PackedByteArray("AAACAAYAAAABAAMAAAACAAcAAAABAAMAAAABAAgAAAABAAMAAAABAAkAAAABAAMAAAABAAoAAAABAAMAAAAAAAsAAAABAAMAAAAAAAwAAAABAAMAAAD//w0AAAABAAMAAAD//w4AAAABAAMAAAD//w8AAAABAAMAAAD+/xAAAAABAAMAAAD9/xEAAAABAAMAAAD8/xEAAAABAAMAAAD9/xAAAAABAAMAAAD8/xAAAAABAAMAAAD8/w8AAAABAAMAAAD8/w4AAAABAAMAAAD9/w0AAAABAAMAAAD9/wwAAAABAAMAAAD9/wsAAAABAAMAAAD9/woAAAABAAMAAAD9/wkAAAABAAMAAAD+/wgAAAABAAMAAAA=")
 tile_set = ExtResource("3_kelw5")
 
-[node name="HighlightMap" type="TileMapLayer" parent="."]
-y_sort_enabled = true
-tile_map_data = PackedByteArray("AAD/////AQAAAAgAAAD+/wAAAQAAAAkAAAD//wEAAQAAAAoAAAAAAP//AQABAAgAAAD//wAAAQABAAkAAAAAAAEAAQABAAoAAAABAAAAAQABAAoAAAADAAEAAQABAAoAAAACAAAAAQABAAoAAAACAP//AQABAAoAAAABAP//AQABAAoAAAAAAAAAAQACAAoAAAABAAEAAQACAAoAAAACAAEAAQACAAoAAAADAP//AQACAAoAAAACAAIAAQABAAYAAFADAAIAAQABAAYAAFAEAAEAAQABAAYAADADAAAAAQABAAYAABAEAAAAAQABAAYAAAD9/wMAAQABAAUAAAD8/wQAAQABAAYAAAD+/wMAAQACAAUAAAD9/wQAAQACAAYAAAAAAAMAAQABAAUAAAD//wQAAQABAAYAAAABAAMAAQACAAUAAAAAAAQAAQACAAYAAAD6/wMAAQABAAUAAAD5/wQAAQABAAYAAAD7/wMAAQACAAUAAAD6/wQAAQACAAYAAAABAAQAAQAEAAMAAQACAAMAAQAEAAMAAQA=")
-tile_set = ExtResource("3_kelw5")
-script = ExtResource("4_u5sy4")
-
-[node name="Units" type="Node" parent="."]
-
 [node name="HUDLayer" type="CanvasLayer" parent="."]
 
 [node name="HUDRoot" type="Control" parent="HUDLayer"]
@@ -29,11 +21,45 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 metadata/_edit_use_anchors_ = true
 
 [node name="EndTurnButton" type="Button" parent="HUDLayer/HUDRoot"]
 layout_mode = 0
 offset_right = 8.0
 offset_bottom = 8.0
+text = "End Turn"
+
+[node name="SpawnUnitButton" type="Button" parent="HUDLayer/HUDRoot"]
+layout_mode = 0
+offset_top = 34.0
+offset_right = 97.0
+offset_bottom = 65.0
+text = "Spawn Unit"
+
+[node name="MoveButton" type="Button" parent="HUDLayer/HUDRoot"]
+layout_mode = 0
+offset_top = 68.0
+offset_right = 99.0
+offset_bottom = 99.0
+text = "Move Mode"
+
+[node name="AttackButton" type="Button" parent="HUDLayer/HUDRoot"]
+layout_mode = 0
+offset_top = 102.0
+offset_right = 106.0
+offset_bottom = 133.0
+text = "Attack Mode"
+
+[node name="HighlightMap" type="TileMapLayer" parent="."]
+y_sort_enabled = true
+tile_map_data = PackedByteArray("AAD/////AQAAAAgAAAD+/wAAAQAAAAkAAAD//wEAAQAAAAoAAAAAAP//AQABAAgAAAD//wAAAQABAAkAAAAAAAEAAQABAAoAAAABAAAAAQABAAoAAAADAAEAAQABAAoAAAACAAAAAQABAAoAAAACAP//AQABAAoAAAABAP//AQABAAoAAAAAAAAAAQACAAoAAAABAAEAAQACAAoAAAACAAEAAQACAAoAAAADAP//AQACAAoAAAACAAIAAQABAAYAAFADAAIAAQABAAYAAFAEAAEAAQABAAYAADADAAAAAQABAAYAABAEAAAAAQABAAYAAAD9/wMAAQABAAUAAAD8/wQAAQABAAYAAAD+/wMAAQACAAUAAAD9/wQAAQACAAYAAAAAAAMAAQABAAUAAAD//wQAAQABAAYAAAABAAMAAQACAAUAAAAAAAQAAQACAAYAAAD6/wMAAQABAAUAAAD5/wQAAQABAAYAAAD7/wMAAQACAAUAAAD6/wQAAQACAAYAAAABAAQAAQAEAAMAAQACAAMAAQAEAAMAAQA=")
+tile_set = ExtResource("3_kelw5")
+script = ExtResource("4_u5sy4")
+
+[node name="Units" type="Node" parent="."]
 
 [connection signal="pressed" from="HUDLayer/HUDRoot/EndTurnButton" to="." method="_on_end_turn_button_pressed"]
+[connection signal="pressed" from="HUDLayer/HUDRoot/SpawnUnitButton" to="." method="_on_spawn_unit_button_pressed"]
+[connection signal="pressed" from="HUDLayer/HUDRoot/MoveButton" to="." method="_on_end_turn_button_pressed"]
+[connection signal="pressed" from="HUDLayer/HUDRoot/AttackButton" to="." method="_on_end_turn_button_pressed"]

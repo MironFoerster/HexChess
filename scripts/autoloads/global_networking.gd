@@ -183,6 +183,7 @@ func submit_command(command: Command):
 	})
 
 func handle_submit_command(sender_id: int, data: Dictionary):
+	print("handle_submit_command")
 	ServerManager.handle_submit_command(sender_id, Command.from_dict(data.command_dict))
 
 func submit_command_processed(to: Array[int], success: bool):
@@ -205,8 +206,7 @@ func handle_end_turn(sender_id: int, data: Dictionary):
 
 
 ### SERVER TO CLIENT UPDATE METHODS ###
-### Used by the server to directly update a clients session, calls update methods on the client battle
-# TODO maybe directly call battle functions, not via game manager
+### Used by the server to directly update a clients battle, calls update methods on the client battle
 
 ### ADD PLAYER ###
 func battle__add_player(to: Array[int], player_id: int, player: Player = null):
@@ -216,14 +216,14 @@ func battle__add_player(to: Array[int], player_id: int, player: Player = null):
 	})
 	
 func handle_battle__add_player(data: Dictionary):
-	GameManager.handle_add_player_to_battle(data.player_id, Player.from_dict(data.player_dict))
+	BattleManager.add_player(data.player_id, Player.from_dict(data.player_dict))
 
 ### START BATTLE ###
 func battle__start(to: Array[int]):
 	send_to_clients(to, "battle__start", {})
 	
 func handle_battle__start(data: Dictionary):
-	GameManager.handle_start_battle()
+	BattleManager.start_battle()
 
 ### SET MAP ###
 func battle__set_map(to: Array[int], map: Map = null):
@@ -232,7 +232,7 @@ func battle__set_map(to: Array[int], map: Map = null):
 	})
 	
 func handle_battle__set_map(data: Dictionary):
-	GameManager.handle_set_battle_map(Map.from_dict(data.map_dict))
+	BattleManager.set_map(Map.from_dict(data.map_dict))
 
 ### EXECUTE COMMAND ###
 func battle__execute_command(to: Array[int], command: Command = null):
@@ -241,7 +241,7 @@ func battle__execute_command(to: Array[int], command: Command = null):
 	})
 	
 func handle_battle__execute_command(data: Dictionary):
-	GameManager.handle_execute_command(Command.from_dict(data.command_dict))
+	BattleManager.execute_command(Command.from_dict(data.command_dict))
 
 
 

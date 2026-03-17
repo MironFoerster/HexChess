@@ -1,25 +1,21 @@
 extends Node
 
 
-@onready var battle_scene
-
 var player: Player
 var map_generator: MapGenerator
-var active_battle: Battle = null
 
 var _connect_success_callback = null
 var _connect_failure_callback = null
 
 
-# These signals can be connected to by a UI lobby scene or the game scene.
+# These signals can be connected to by a UI lobby scene or the battle scene.
 signal player_connected(peer_id: int, player_info)
 signal player_disconnected(peer_id: int)
 signal server_disconnected()
 signal ident_processed(success: bool)
-signal active_battle_set()
 signal create_private_room_processed(success: bool)
 signal join_private_room_processed(success: bool)
-signal start_session_game_processed(success: bool)
+signal start_battle_processed(success: bool)
 
 func initialize_client() -> void:
 	# wire up networking signals on client, make sure theres no duplicate connections
@@ -42,8 +38,7 @@ func handle_identify_player_processed(success: bool, _player: Player):
 func handle_create_private_room_processed(success: bool, battle: Battle):
 	if success:
 		print("[CLIENT] Create private room succeded: ", battle)
-		active_battle = battle
-		active_battle_set.emit()
+		BattleManager.set_battle(battle)
 		SceneManager.page_transition_to("private_lobby_admin")
 	else:
 		print("[CLIENT] Create private room failed.")
@@ -53,29 +48,13 @@ func handle_create_private_room_processed(success: bool, battle: Battle):
 func handle_join_private_room_processed(success: bool, battle: Battle):
 	if success:
 		print("[CLIENT] Join private room succeded: ", battle)
-		active_battle = battle
-		active_battle_set.emit()
+		BattleManager.set_battle(battle)
 		SceneManager.page_transition_to("private_lobby_joined")
 	else:
 		print("[CLIENT] Join private room failed.")
 	
 	join_private_room_processed.emit(success)
-	
-	
 
-func handle_add_player_to_battle(player_id: int, player: Player):
-	active_battle.add_player(player_id, player)
-
-func handle_start_battle():
-	active_battle.start_game()
-	SceneManager.page_transition_to("battle")
-	
-func handle_set_battle_map(map: Map):
-	active_battle.set_map(map)
-	
-func handle_execute_command(command: Command):
-	active_battle.execute_command(command)
-	
 
 ### Multiplayer event handlers ###
 

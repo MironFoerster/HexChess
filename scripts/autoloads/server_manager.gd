@@ -6,7 +6,7 @@ var database: Database
 var active_players: Dictionary[int, Player] = {}
 var reconnecting_peers: Dictionary[int, float] = {} 
 var map_generator: MapGenerator
-var active_battles: Array[Battle] = [] # Battle.new("private", 3, {3: Player.new("bob")}, 123456, "Session2")
+var battles: Array[Battle] = [] # Battle.new("private", 3, {3: Player.new("bob")}, 123456, "Session2")
 
 
 func _process(_delta):
@@ -61,14 +61,14 @@ func handle_create_private_room(sender_id: int):
 	print("[SERVER] Creating private room.")
 	var game_code = 123456
 	print(active_players)
-	var battle = Battle.new("private", sender_id, {sender_id: active_players[sender_id]}, game_code)
+	var battle = Battle.new(true, "private", sender_id, {sender_id: active_players[sender_id]}, game_code)
 	
-	active_battles.append(battle)
+	battles.append(battle)
 	GlobalNetworking.create_private_room_processed([sender_id], true, battle)
 
 
 func handle_join_private_room(joined_id: int, code: int):
-	for battle in active_battles:
+	for battle in battles:
 		if code == battle.game_code:
 			var joined_player = active_players[joined_id]
 			
@@ -83,14 +83,14 @@ func handle_join_private_room(joined_id: int, code: int):
 			break
 
 func handle_start_battle(sender_id):
-	for battle in active_battles:
+	for battle in battles:
 		if sender_id == battle.admin_id:
 			GlobalNetworking.start_battle_processed([sender_id], true)
 			
-			# start game on server
-			battle.start_game()
+			# start battle on server
+			battle.start()
 			
-			# start game on all player clients
+			# start battle on all player clients
 			GlobalNetworking.battle__start(battle.players.keys())
 
 			
@@ -105,17 +105,19 @@ func handle_start_battle(sender_id):
 			GlobalNetworking.start_battle_processed([sender_id], false)
 
 func handle_submit_command(sender_id: int, command: Command):
-	for battle in active_battles:
+	print("handle_submit_command on server")
+	for battle in battles:
 		if sender_id in battle.players.keys():
-			if sender_id == battle.player_turn:
-				GlobalNetworking.submit_command_processed([sender_id], true)
-				
-				# execute command on server
-				battle.execute_command(command)
-				
-				# execute command on all players
-				GlobalNetworking.battle__execute_command(battle.players.keys(), command)
-				break
+			print("handle_submit_command runs")
+			#if sender_id == battle.player_turn:
+			GlobalNetworking.submit_command_processed([sender_id], true)
+			
+			# execute command on server
+			battle.execute_command(command)
+			
+			# execute command on all players
+			GlobalNetworking.battle__execute_command(battle.players.keys(), command)
+			break
 		else:
 			break
 			

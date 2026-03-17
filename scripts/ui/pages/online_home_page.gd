@@ -11,7 +11,7 @@ func _on_exit_button_pressed() -> void:
 
 func _on_play_local_button_pressed() -> void:
 	SceneManager.page_transition_to("local_home")
-	# TODO: do this on game start: GlobalAudio.switch_music_to("game")
+	# TODO: do this on battle start: GlobalAudio.switch_music_to("game")
 
 func _on_create_button_pressed() -> void:
 	GlobalNetworking.create_private_room()

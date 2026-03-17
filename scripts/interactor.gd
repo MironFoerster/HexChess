@@ -1,6 +1,6 @@
 extends Node
 
-@onready var game := get_parent() as Game
+@onready var battle_scene := get_parent() as BattleScene
 var pressed: Node3D
 var action_mode: String = "move"
 var tile_highlights: Dictionary = {
@@ -38,9 +38,9 @@ func pressed_on(tile: Node3D) -> void:
 	if tile_highlights.selected != null:
 		if tile_highlights.selected != tile:
 			if action_mode == "move" and tile in tile_highlights.movable:
-				game.request_take_action.emit(tile_highlights.selected, tile, "move")
+				battle_scene.request_take_action.emit(tile_highlights.selected, tile, "move")
 			elif action_mode == "affect" and tile in tile_highlights.affectable:
-				game.take_action.emit(tile_highlights.selected, tile, "affect")
+				battle_scene.take_action.emit(tile_highlights.selected, tile, "affect")
 			
 			tile_highlights.selected = null
 			hovered_on(tile)
@@ -52,9 +52,9 @@ func pressed_on(tile: Node3D) -> void:
 		
 		
 	tile_highlights.selected = tile
-	game.update_highlights.emit()
+	battle_scene.update_highlights.emit()
 	
 func hovered_on(tile: Node3D) -> void:
 	if tile_highlights.hovered != tile:
 		tile_highlights.hovered = tile
-		game.update_highlights.emit()
+		battle_scene.update_highlights.emit()
