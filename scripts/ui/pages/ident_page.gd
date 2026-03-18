@@ -59,4 +59,5 @@ func _clear_all_inputs():
 
 
 func _on_connect_to_server_button_pressed() -> void:
+	GameManager.initialize_client()
 	GlobalNetworking.connect_to_server()

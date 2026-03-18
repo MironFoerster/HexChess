@@ -1,4 +1,4 @@
-extends Object
+extends RefCounted
 class_name Cell
 
 var terrain_type: String
@@ -20,20 +20,20 @@ func to_dict() -> Dictionary[StringName, Variant]:
 		"items": items.map(func (i): i.to_dict())
 	}
 
-static func from_dict(data: Dictionary[StringName, Variant]) -> Cell:
+static func from_dict(dict: Dictionary[StringName, Variant]) -> Cell:
 	var cell = Cell.new()
-	cell.terrain_type = data.get("terrain_type", "")
-	cell.feature = data.get("feature", "")
+	cell.terrain_type = dict.get("terrain_type", "")
+	cell.feature = dict.get("feature", "")
 	
 	# Reconstruct arrays of Status and Item
-	var status_array = data.get("status", [])
+	var status_array = dict.get("status", [])
 	cell.status.clear()
-	for s_data in status_array:
-		cell.status.append(Status.from_dict(s_data))
+	for status_dict in status_array:
+		cell.status.append(Status.from_dict(status_dict))
 	
-	var items_array = data.get("items", [])
+	var items_array = dict.get("items", [])
 	cell.items.clear()
-	for i_data in items_array:
-		cell.items.append(Item.from_dict(i_data))
+	for item_dict in items_array:
+		cell.items.append(Item.from_dict(item_dict))
 	
 	return cell

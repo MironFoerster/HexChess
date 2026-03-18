@@ -8,8 +8,9 @@ var unit_id : int
 
 @onready var area : Area2D = $Area2D
 
-func initialize(id: int):
-	unit_id = id
+func initialize(_unit: Unit):
+	unit_id = _unit.unit_id
+	position = Utils.pos_from_coords(_unit.coords)
 
 func _ready():
 	area.mouse_entered.connect(_on_mouse_entered)

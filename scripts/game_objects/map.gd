@@ -1,4 +1,4 @@
-extends Object
+extends RefCounted
 class_name Map
 
 var cells: Dictionary[Vector2i, Cell]

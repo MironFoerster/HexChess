@@ -1,4 +1,4 @@
-extends Object
+extends RefCounted
 class_name Battle
 
 var type: String # private / public / local
@@ -15,8 +15,10 @@ var map: Map
 var player_turn = -1
 
 var units_by_id: Dictionary[int, Unit] = {}
-var units_by_coords: Dictionary[Vector2i, Unit] = {}
-var _next_unit_id := 0
+var unit_ids_by_coords: Dictionary[Vector2i, int] = {}
+var unit_ids_by_owner_id: Dictionary[int, Array] = {}
+
+var _next_unit_id: int = 0
 
 ### Signals that the battle emits to notify the game when the state has changed ###
 signal player_added(player: Player)
@@ -45,7 +47,10 @@ func execute_command(command: Command):
 	root_effect.child_effects = _get_command_effects(command)
 	
 	_resolve_and_apply_effect_tree(root_effect)
-	
+	print("after resolve and apply")
+	print(root_effect.to_dict())
+	for unit in units_by_id.values():
+		print(unit.to_dict())
 	effect_tree_applied.emit(root_effect)
 
 
@@ -57,45 +62,50 @@ func _get_command_effects(command: Command):
 	var effects: Array[Effect] = []
 	match command.command_type:
 		"spawn_unit":
-			effects.append(Effect.new("spawn_unit"))
+			effects.append(Effect.new("spawn_unit", 1, command.target_coords, {"unit": Unit.from_dict(command.data.unit_dict)}))
 	return effects
 
 func _resolve_and_apply_effect_tree(effect_tree: Effect): # fills in the Effect-Tree IN PLACE
 	# 1. Flatten the root effect tree into a time queue of effects
-	var effect_time_queue: Dictionary[float, Array] = {}
-	_effect_tree_to_time_queue(effect_tree, effect_time_queue, 0.0)
+	var effect_time_queue: Dictionary[int, Array] = {}
+	_time_queue_from_effect_tree(effect_tree, effect_time_queue, 1)
 	
 	# 2. while-loop through time queue, apply effects, add resulting child effects to time queue
-	var current_time: float = 0.0
+	var current_time: int = 0
 	var current_effect: Effect
 	while !effect_time_queue.is_empty():
+		print("ETQ while")
 		# skip empty buckets
+		print(effect_time_queue)
+		print(effect_tree.to_dict())
 		while !effect_time_queue.has(current_time):
-			current_time += 0.1
+			current_time += 1
 		
 		# get next timed effect
-		current_effect = effect_time_queue[current_time].pop_back() # TODO is front more efficient??
+		current_effect = effect_time_queue[current_time].pop_back()
+
 		# remove bucket if now empty
 		if effect_time_queue[current_time].is_empty():
 			effect_time_queue.erase(current_time)
 		
 		# apply effect, get child effects
 		var child_effects: Array[Effect] = apply_effect(current_effect)
+
 		# add child effects to effect tree (the effect itself) for the visualization
-		current_effect.child_effects = child_effects
+		current_effect.child_effects.append_array(child_effects)
 		# add child effects to time queue (for further timed simulation)
 		var child_time = current_time + current_effect.duration
 		for child_effect in child_effects:
 			add_effect_to_time_queue(effect_time_queue, child_time, child_effect)
 
 
-func _effect_tree_to_time_queue(effect_tree: Effect, effect_time_queue: Dictionary[float, Array], current_time: float):
+func _time_queue_from_effect_tree(effect_tree: Effect, effect_time_queue: Dictionary[int, Array], current_time: int):
 	add_effect_to_time_queue(effect_time_queue, current_time, effect_tree)
 	
 	for child_effect in effect_tree.child_effects:
-		_effect_tree_to_time_queue(child_effect, effect_time_queue, current_time+effect_tree.duration)
+		_time_queue_from_effect_tree(child_effect, effect_time_queue, current_time+effect_tree.duration)
 
-func add_effect_to_time_queue(time_queue: Dictionary[float, Array], time: float, effect: Effect):
+func add_effect_to_time_queue(time_queue: Dictionary[int, Array], time: int, effect: Effect):
 	if !time_queue.has(time):
 		time_queue[time] = []
 	time_queue[time].append(effect)
@@ -105,11 +115,12 @@ func apply_effect(effect: Effect) -> Array[Effect]:
 	match effect.effect_type:
 		"spawn_unit":
 			# apply
-			_spawn_unit(effect.target_coords, effect.data.unit_type)
+			_spawn_unit(effect.data.unit)
 			# compute children
-			if not effect.target_coords.y > 5:
-				var extra_spawn: Effect = effect.duplicate()
-				extra_spawn.target_coords += Vector2i(1, 1)
+			
+			if not effect.data.unit.coords.y > 5:
+				var extra_spawn: Effect = Effect.new("spawn_unit", 1, Vector2i(0,0), {"unit": Unit.new("warrior", effect.data.unit.coords, effect.data.unit.owner_id, 10)})
+				extra_spawn.data.unit.coords += Vector2i(1, 1)
 				# return child effects
 				return [extra_spawn]
 	return []
@@ -120,20 +131,18 @@ func apply_effect(effect: Effect) -> Array[Effect]:
 
 
 ### EFFECT APPLLIERS ###
-func _spawn_unit(coords: Vector2i, unit_type: StringName):
-	var unit: Unit = Unit.new(unit_type)
-	unit.id = _next_unit_id
+func _spawn_unit(unit: Unit):
+	unit.unit_id = _next_unit_id
 	_next_unit_id += 1
-	unit.coords = coords
 
-	units_by_id[unit.id] = unit
-	units_by_coords[coords] = unit
-	return unit
+	units_by_id[unit.unit_id] = unit
+	unit_ids_by_coords[unit.coords] = unit.unit_id
 
-func _move_unit(unit: Unit, new_coords: Vector2i) -> void:
-	units_by_coords.erase(unit.coord)
+func _move_unit(unit_id: int, new_coords: Vector2i) -> void:
+	var unit = units_by_id[unit_id]
+	unit_ids_by_coords.erase(unit.coords)
 	unit.coords = new_coords
-	units_by_coords[new_coords] = unit
+	unit_ids_by_coords[new_coords] = unit
 
 
 

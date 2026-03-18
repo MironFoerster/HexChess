@@ -20,7 +20,6 @@ func start_server():
 
 # runs once user decides to use online features, creates a client on the users instance
 func connect_to_server():
-	GameManager.initialize_client()
 	var peer = ENetMultiplayerPeer.new()
 	var err = peer.create_client(server_ip, port)
 	if err != OK:
@@ -183,7 +182,6 @@ func submit_command(command: Command):
 	})
 
 func handle_submit_command(sender_id: int, data: Dictionary):
-	print("handle_submit_command")
 	ServerManager.handle_submit_command(sender_id, Command.from_dict(data.command_dict))
 
 func submit_command_processed(to: Array[int], success: bool):

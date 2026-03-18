@@ -6,10 +6,9 @@ var unit_scene = load("res://scenes/game/unit.tscn") as PackedScene
 @onready var highlight_map_node = $"./HighlightMap"
 @onready var units_node = $"./Units"
 
-var unit_nodes: Dictionary[int, Node2D]
-var unit_ids_by_owner: Dictionary[int, Array]  # owner_id:[unit_id1, unit_id2]
+var unit_nodes_by_id: Dictionary[int, Node2D]
+var unit_ids_by_owner: Dictionary[int, Array]  # owner_id->[unit_id1, unit_id2]
 
-var units_abilities_cache # TODO put this here or rather directly in session?
 
 func _ready():
 	BattleManager.battle_set.connect(_on_battle_set)
@@ -39,6 +38,7 @@ func render_effect_tree(effect: Effect):
 			await _spawn_unit(effect)
 	
 	for child_effect in effect.child_effects:
+		print("entering child")
 		render_effect_tree(child_effect)
 		
 func _start_battle_setup():
@@ -69,23 +69,21 @@ func _rebuild_units():
 		units_node.add_child(unit_node)
 
 func _spawn_unit(effect: Effect) -> Signal:
-	if not effect.data.unit_type in DataCatalog.units.keys():
-		print("Unit type not found:", effect.data.unit_type)
-		return get_tree().create_timer(0).timeout
-		
+	print("spawning")
 	var unit_instance: Node2D = unit_scene.instantiate()
-	unit_instance.initialize(effect.data.unit_type, effect.data.owner_id, effect.target_coords)
-	#unit_instance.call_deferred("set_name", "Piece")
+	unit_instance.initialize(effect.data.unit)
+	unit_nodes_by_id[effect.data.unit.unit_id] = unit_instance
+	if !unit_ids_by_owner.has(effect.data.unit.owner_id):
+		unit_ids_by_owner[effect.data.unit.owner_id] = []
+	unit_ids_by_owner[effect.data.unit.owner_id].append(effect.data.unit.unit_id)
+	
 	units_node.add_child(unit_instance)
 	
-	unit_nodes[effect.data.unit_id] = unit_instance
-	unit_ids_by_owner[effect.data.owner_id].append(effect.data.unit_id)
-	
-	return get_tree().create_timer(effect.duration).timeout
+	return get_tree().create_timer(effect.duration/10.0).timeout
 	
 func _on_end_turn_button_pressed() -> void:
 	GlobalNetworking.end_turn()
 
 
 func _on_spawn_unit_button_pressed() -> void:
-	BattleManager.submit_command(Command.new("spawn_unit", Vector2i(0,0), {"unit_type": "warrior", "owner_id": 1, "unit_id": 20}))
+	BattleManager.submit_command(Command.new("spawn_unit", Vector2i(0,0), {"unit_dict": Unit.new("warrior", Vector2i(0,0), GameManager.player.player_id).to_dict()}))

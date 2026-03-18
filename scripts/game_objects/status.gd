@@ -1,4 +1,4 @@
-extends Object
+extends RefCounted
 class_name Status
 
 var status_type: String

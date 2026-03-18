@@ -3,10 +3,13 @@ extends Node
 
 var database: Database
 
+var peer_ids_by_player_id: Dictionary[int, int] = {}
 var active_players: Dictionary[int, Player] = {}
 var reconnecting_peers: Dictionary[int, float] = {} 
 var map_generator: MapGenerator
 var battles: Array[Battle] = [] # Battle.new("private", 3, {3: Player.new("bob")}, 123456, "Session2")
+
+var _next_player_id: int = 0
 
 
 func _process(_delta):
@@ -30,6 +33,10 @@ func handle_nickname_player(sender_id: int, nickname: String):
 	print("[SERVER] Nicknaming player: ", nickname)
 
 	var player = Player.new(nickname, true)
+	player.player_id = _next_player_id
+	_next_player_id += 1
+	
+	peer_ids_by_player_id[player.player_id] = sender_id
 	active_players[sender_id] = player
 	
 	GlobalNetworking.identify_player_processed([sender_id], true, player)
@@ -105,10 +112,8 @@ func handle_start_battle(sender_id):
 			GlobalNetworking.start_battle_processed([sender_id], false)
 
 func handle_submit_command(sender_id: int, command: Command):
-	print("handle_submit_command on server")
 	for battle in battles:
 		if sender_id in battle.players.keys():
-			print("handle_submit_command runs")
 			#if sender_id == battle.player_turn:
 			GlobalNetworking.submit_command_processed([sender_id], true)
 			

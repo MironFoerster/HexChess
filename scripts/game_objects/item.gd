@@ -1,4 +1,4 @@
-extends Object
+extends RefCounted
 class_name Item
 
 var item_type: String

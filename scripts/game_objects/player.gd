@@ -1,11 +1,12 @@
-extends Object
+extends RefCounted
 class_name Player
 
+var player_id: int
 var name: String
 var is_temp: bool
 var rank: int
 
-var id_token: int
+var reconnect_token: int
 
 func _init(_name: String = "", _is_temp: bool = true, _rank: int = 0):
 	name = _name

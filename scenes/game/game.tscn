@@ -1,6 +1,7 @@
-[gd_scene load_steps=4 format=4 uid="uid://b7hqi7n6a5oh4"]
+[gd_scene load_steps=5 format=4 uid="uid://b7hqi7n6a5oh4"]
 
 [ext_resource type="Script" uid="uid://3c831mfs5q8n" path="res://scripts/battle_scene.gd" id="1_lbhrr"]
+[ext_resource type="TileSet" uid="uid://8vvolw0a2rof" path="res://assets/map/tileset4.tres" id="2_7qcb4"]
 [ext_resource type="TileSet" uid="uid://dlcd4svdgx8t" path="res://assets/map/map_tileset.tres" id="3_kelw5"]
 [ext_resource type="Script" uid="uid://bi1oos5yne5vs" path="res://scripts/interactor.gd" id="4_u5sy4"]
 
@@ -9,8 +10,9 @@ script = ExtResource("1_lbhrr")
 
 [node name="Map" type="TileMapLayer" parent="."]
 y_sort_enabled = true
-tile_map_data = PackedByteArray("AAACAAYAAAABAAMAAAACAAcAAAABAAMAAAABAAgAAAABAAMAAAABAAkAAAABAAMAAAABAAoAAAABAAMAAAAAAAsAAAABAAMAAAAAAAwAAAABAAMAAAD//w0AAAABAAMAAAD//w4AAAABAAMAAAD//w8AAAABAAMAAAD+/xAAAAABAAMAAAD9/xEAAAABAAMAAAD8/xEAAAABAAMAAAD9/xAAAAABAAMAAAD8/xAAAAABAAMAAAD8/w8AAAABAAMAAAD8/w4AAAABAAMAAAD9/w0AAAABAAMAAAD9/wwAAAABAAMAAAD9/wsAAAABAAMAAAD9/woAAAABAAMAAAD9/wkAAAABAAMAAAD+/wgAAAABAAMAAAA=")
-tile_set = ExtResource("3_kelw5")
+tile_set = ExtResource("2_7qcb4")
+
+[node name="Units" type="Node2D" parent="."]
 
 [node name="HUDLayer" type="CanvasLayer" parent="."]
 
@@ -52,12 +54,11 @@ offset_bottom = 133.0
 text = "Attack Mode"
 
 [node name="HighlightMap" type="TileMapLayer" parent="."]
+visible = false
 y_sort_enabled = true
 tile_map_data = PackedByteArray("AAD/////AQAAAAgAAAD+/wAAAQAAAAkAAAD//wEAAQAAAAoAAAAAAP//AQABAAgAAAD//wAAAQABAAkAAAAAAAEAAQABAAoAAAABAAAAAQABAAoAAAADAAEAAQABAAoAAAACAAAAAQABAAoAAAACAP//AQABAAoAAAABAP//AQABAAoAAAAAAAAAAQACAAoAAAABAAEAAQACAAoAAAACAAEAAQACAAoAAAADAP//AQACAAoAAAACAAIAAQABAAYAAFADAAIAAQABAAYAAFAEAAEAAQABAAYAADADAAAAAQABAAYAABAEAAAAAQABAAYAAAD9/wMAAQABAAUAAAD8/wQAAQABAAYAAAD+/wMAAQACAAUAAAD9/wQAAQACAAYAAAAAAAMAAQABAAUAAAD//wQAAQABAAYAAAABAAMAAQACAAUAAAAAAAQAAQACAAYAAAD6/wMAAQABAAUAAAD5/wQAAQABAAYAAAD7/wMAAQACAAUAAAD6/wQAAQACAAYAAAABAAQAAQAEAAMAAQACAAMAAQAEAAMAAQA=")
 tile_set = ExtResource("3_kelw5")
 script = ExtResource("4_u5sy4")
-
-[node name="Units" type="Node" parent="."]
 
 [connection signal="pressed" from="HUDLayer/HUDRoot/EndTurnButton" to="." method="_on_end_turn_button_pressed"]
 [connection signal="pressed" from="HUDLayer/HUDRoot/SpawnUnitButton" to="." method="_on_spawn_unit_button_pressed"]
