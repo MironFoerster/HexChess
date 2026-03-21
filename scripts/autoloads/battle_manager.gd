@@ -4,8 +4,12 @@ extends Node
 @onready var battle_scene
 
 var battle: Battle
+var map_generator: MapGenerator
 
 signal battle_set()
+
+func _ready():
+	map_generator = MapGenerator.new()
 
 
 ### SUBMIT METHODS ###
@@ -46,8 +50,9 @@ func start_battle():
 	battle.start()
 	SceneManager.page_transition_to("none")
 	
-func set_map(map: Map):
-	battle.set_map(map)
+func set_map(seed: int):
+	var generated_map: Map = map_generator.generate(seed)
+	battle.set_map(generated_map)
 	
 func execute_command(command: Command):
 	battle.execute_command(command)

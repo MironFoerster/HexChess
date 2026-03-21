@@ -7,6 +7,7 @@ var peer_ids_by_player_id: Dictionary[int, int] = {}
 var active_players: Dictionary[int, Player] = {}
 var reconnecting_peers: Dictionary[int, float] = {} 
 var map_generator: MapGenerator
+var rng: RandomNumberGenerator
 var battles: Array[Battle] = [] # Battle.new("private", 3, {3: Player.new("bob")}, 123456, "Session2")
 
 var _next_player_id: int = 0
@@ -27,6 +28,7 @@ func initialize_server():
 	
 	database = Database.new()
 	map_generator = MapGenerator.new()
+	rng = RandomNumberGenerator.new()
 
 ### HANDLERS ###
 func handle_nickname_player(sender_id: int, nickname: String):
@@ -94,20 +96,20 @@ func handle_start_battle(sender_id):
 		if sender_id == battle.admin_id:
 			GlobalNetworking.start_battle_processed([sender_id], true)
 			
-			# start battle on server
-			battle.start()
+			var seed: int = rng.randi()
 			
-			# start battle on all player clients
-			GlobalNetworking.battle__start(battle.players.keys())
-
-			
-			var generated_map: Map = map_generator.generate()
-
 			# set_map on server
+			var generated_map: Map = map_generator.generate(seed)
 			battle.set_map(generated_map)
 			
 			# set_map on all player clients
-			GlobalNetworking.battle__set_map(battle.players.keys(), generated_map)
+			GlobalNetworking.battle__set_map(battle.players.keys(), seed)
+			
+			
+			# start battle on server
+			battle.start()
+			# start battle on all player clients
+			GlobalNetworking.battle__start(battle.players.keys())
 		else:
 			GlobalNetworking.start_battle_processed([sender_id], false)
 

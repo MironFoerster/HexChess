@@ -224,13 +224,13 @@ func handle_battle__start(data: Dictionary):
 	BattleManager.start_battle()
 
 ### SET MAP ###
-func battle__set_map(to: Array[int], map: Map = null):
+func battle__set_map(to: Array[int], seed: int = 0):
 	send_to_clients(to, "battle__set_map", {
-		"map_dict": map.to_dict() if map != null else {}
+		"seed": seed
 	})
 	
 func handle_battle__set_map(data: Dictionary):
-	BattleManager.set_map(Map.from_dict(data.map_dict))
+	BattleManager.set_map(data.seed)
 
 ### EXECUTE COMMAND ###
 func battle__execute_command(to: Array[int], command: Command = null):

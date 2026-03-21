@@ -4,7 +4,7 @@ class_name MapGenerator
 func _init():
 	pass
 	
-func generate() -> Map:
+func generate(seed: int) -> Map:
 	var map = Map.new()
 	for i in range(0, 10):
 		for j in range(0, 10):
