@@ -5,23 +5,20 @@ var type: String # private / public / local
 var online: bool
 var mode_name: String
 var admin_id: int
-var players: Dictionary[int, Player] # player_id : player_object
-var game_code: int
-var units: Dictionary[int, Unit] # unit_id : unit_object
+#var players: Dictionary[int, Player] # player_id : player_reference
+var lobby_code: int
+var squads: Dictionary[int, BattleSquad] # squad_id(TODO what is this) : squad reference
 var map: Map
-# used to check if a update from the server was missed
-#var state_date: int
 
-var player_turn = -1
 
-var units_by_id: Dictionary[int, Unit] = {}
-var unit_ids_by_coords: Dictionary[Vector2i, int] = {}
-var unit_ids_by_owner_id: Dictionary[int, Array] = {}
+var squads_turn = -1
 
 var _next_unit_id: int = 0
+var units_by_id: Dictionary[int, BattleUnit] = {} # unit_id(TODO what is this) : unit reference
+var unit_ids_by_coords: Dictionary[Vector2i, int] = {} # coords : id of occupying unit
+
 
 ### Signals that the battle emits to notify the game when the state has changed ###
-signal player_added(player: Player)
 signal battle_started()
 signal map_updated()
 signal effect_tree_applied(effect_tree: Effect)
@@ -30,9 +27,10 @@ signal effect_tree_applied(effect_tree: Effect)
 
 
 ### UPDATE METHODS, usually called by BattleManager ###
-func add_player(id: int, player: Player): # TODO what: id is not only peer_id, because function is also used for local player adding
-	players[id] = player
-	player_added.emit()
+func add_squad(squad_id: int, squad: BattleSquad): # TODO <deprecated?> what: id is not only peer_id, because function is also used for local player adding
+	squads[squad_id] = squad
+	for unit: BattleUnit in squad.squad_units:
+		_spawn_unit(unit)
 
 func start():
 	battle_started.emit()
@@ -47,11 +45,10 @@ func execute_command(command: Command):
 	root_effect.child_effects = _get_command_effects(command)
 	
 	_resolve_and_apply_effect_tree(root_effect)
-	print("after resolve and apply")
-	print(root_effect.to_dict())
-	for unit in units_by_id.values():
-		print(unit.to_dict())
+
 	effect_tree_applied.emit(root_effect)
+	
+#func end_turn(): # TODO decide turn ordering
 
 
 
@@ -62,7 +59,11 @@ func _get_command_effects(command: Command):
 	var effects: Array[Effect] = []
 	match command.command_type:
 		"spawn_unit":
-			effects.append(Effect.new("spawn_unit", 1, command.target_coords, {"unit": Unit.from_dict(command.data.unit_dict)}))
+			effects.append(Effect.new("spawn_unit", 1, command.target_coords, {"unit": BattleUnit.from_dict(command.data.unit_dict)}))
+		"ability":
+			match command.data.ability_type:
+				"move_along_axis":
+					effects.append(Effect.new("move_along_axis", 1, command.target_coords, {"unit_id": command.data.unit_id, "target_coords": command.data.target_coords}))
 	return effects
 
 func _resolve_and_apply_effect_tree(effect_tree: Effect): # fills in the Effect-Tree IN PLACE
@@ -119,7 +120,7 @@ func apply_effect(effect: Effect) -> Array[Effect]:
 			# compute children
 			
 			if not effect.data.unit.coords.y > 5:
-				var extra_spawn: Effect = Effect.new("spawn_unit", 1, Vector2i(0,0), {"unit": Unit.new("warrior", effect.data.unit.coords, effect.data.unit.owner_id, 10)})
+				var extra_spawn: Effect = Effect.new("spawn_unit", 1, Vector2i(0,0), {"unit": BattleUnit.new(Types.UnitType.WARRIOR, effect.data.unit.coords, effect.data.unit.owner_id, 10)})
 				extra_spawn.data.unit.coords += Vector2i(1, 1)
 				# return child effects
 				return [extra_spawn]
@@ -130,8 +131,8 @@ func apply_effect(effect: Effect) -> Array[Effect]:
 
 
 
-### EFFECT APPLLIERS ###
-func _spawn_unit(unit: Unit):
+### EFFECT APPLIERS ###
+func _spawn_unit(unit: BattleUnit):
 	unit.unit_id = _next_unit_id
 	_next_unit_id += 1
 
@@ -147,17 +148,24 @@ func _move_unit(unit_id: int, new_coords: Vector2i) -> void:
 
 
 
-### functions that DONT change the state. pure information retrieval used by the game scene ###
-func get_ability_allowed_cells(unit_id: StringName, ability_type: StringName) -> Array[Vector2]:
+### INFORMAION RETRIEVAL for battle scene ###
+func get_ability_allowed_cells(unit_id: int, ability_type: Types.AbilityType) -> Array[Vector2i]:
 	var ability_data = DataCatalog.abilities[ability_type]
-	var allowed_cells: Array[Vector2]
-	for step: Vector2 in ability_data.target_pattern.base_steps:
+	var allowed_cells: Array[Vector2i]
+	for step: Vector2i in ability_data.target_pattern.base_steps:
 		for multiple in range(ability_data.target_pattern.multiples):
 			allowed_cells.append(step)
 			step = step + step # TODO: is this defined for vector2?
 	
 	# TODO: remove unreachable or already used cells
 	return allowed_cells
+	
+func get_unit_abilities(unit_id: int) -> Array[Ability]:
+	var abilities: Array[Ability] = []
+	for ability_type in DataCatalog.units[units_by_id[unit_id].unit_type].abilities:
+		abilities.append(Ability.new(ability_type, get_ability_allowed_cells(unit_id, ability_type), true))
+		
+	return abilities
 
 
 
@@ -169,39 +177,39 @@ func get_ability_allowed_cells(unit_id: StringName, ability_type: StringName) ->
 
 
 
-func _init(_online: bool = false, _type: String = "public", _admin_id: int = -1, _players: Dictionary[int, Player] = {}, _game_code: int = 0, _mode_name: String = "") -> void:
+func _init(_online: bool = false, _type: String = "public", _admin_id: int = -1, _squads: Dictionary[int, BattleSquad] = {}, _lobby_code: int = 0, _mode_name: String = "") -> void:
 	online = _online
 	type = _type
 	admin_id = _admin_id
-	players = _players
-	game_code = _game_code
+	squads = _squads
+	lobby_code = _lobby_code
 	mode_name = _mode_name
 	
 func to_dict() -> Dictionary[StringName, Variant]:
-	var _players = {}
-	for key in players.keys():
-		_players[key] = players[key].to_dict()
+	var _squads = {}
+	for key in squads.keys():
+		_squads[key] = squads[key].to_dict()
 		
 	return {
 		"mode_name": mode_name,
 		"online": online,
 		"type": type,
 		"admin_id": admin_id,
-		"players": _players,
-		"game_code": game_code
+		"squads": _squads,
+		"lobby_code": lobby_code
 	}
 
 static func from_dict(data: Dictionary[StringName, Variant]) -> Battle:
 	var battle = Battle.new()
 	
-	var _players: Dictionary[int, Player] = {}
-	for key in data["players"].keys():
-		_players[key] = Player.from_dict(data["players"][key])
+	var _squads: Dictionary[int, BattleSquad] = {}
+	for key in data["squads"].keys():
+		_squads[key] = BattleSquad.from_dict(data["squads"][key])
 
 	battle.mode_name = data.get("mode_name", "")
 	battle.online = data.get("online", false)
 	battle.type = data.get("type", "public")
 	battle.admin_id = data.get("admin_id", -1)
-	battle.players = _players
-	battle.game_code = data.get("game_code", "")
+	battle.squads = _squads
+	battle.lobby_code = data.get("lobby_code", "")
 	return battle

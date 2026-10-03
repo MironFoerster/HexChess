@@ -33,8 +33,7 @@ func initialize_server():
 ### HANDLERS ###
 func handle_nickname_player(sender_id: int, nickname: String):
 	print("[SERVER] Nicknaming player: ", nickname)
-
-	var player = Player.new(nickname, true)
+	var player = Player.new(_next_player_id, nickname, true)
 	player.player_id = _next_player_id
 	_next_player_id += 1
 	
@@ -68,17 +67,18 @@ func handle_register_player(sender_id: int, username: String, password: String):
 
 func handle_create_private_room(sender_id: int):
 	print("[SERVER] Creating private room.")
-	var game_code = 123456
+	var lobby_code = 123456
 	print(active_players)
-	var battle = Battle.new(true, "private", sender_id, {sender_id: active_players[sender_id]}, game_code)
+	# TODO change to private LOBBY and dont create battle, but a lobby object
+	#var battle = Battle.new(true, "private", sender_id, {sender_id: active_players[sender_id]}, lobby_code)
 	
-	battles.append(battle)
-	GlobalNetworking.create_private_room_processed([sender_id], true, battle)
+	#battles.append(battle)
+	#GlobalNetworking.create_private_room_processed([sender_id], true, battle)
 
 
 func handle_join_private_room(joined_id: int, code: int):
 	for battle in battles:
-		if code == battle.game_code:
+		if code == battle.lobby_code:
 			var joined_player = active_players[joined_id]
 			
 			var success = true
@@ -133,7 +133,8 @@ func handle_end_turn(sender_id: int):
 
 func handle_peer_connected(peer_id: int):
 	print("A client connected.")
-	active_players[peer_id] = Player.new() # TODO what about reconnects
+	active_players[peer_id] = Player.new(_next_player_id) # TODO what about reconnects
+	_next_player_id += 1
 
 func handle_peer_disconnected(peer_id: int):
 	print("A client disconnected.")
@@ -148,5 +149,6 @@ func handle_peer_disconnected(peer_id: int):
 
 ### HELPERS ###
 func load_player_from_database(username: String) -> Player:
-	return Player.new(username, false, database.get_user_rank(username))
+	_next_player_id += 1
+	return Player.new(_next_player_id - 1, username, false)
 	

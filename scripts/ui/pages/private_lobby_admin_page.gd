@@ -4,7 +4,7 @@ extends Control
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	$JoinCodeLabel.text = "Game Code: " + str(BattleManager.battle.game_code)
+	$JoinCodeLabel.text = "Lobby Code: " + str(BattleManager.battle.lobby_code)
 	$VBoxContainer/NumPlayersLabel.text = "Number of Players: 1"
 	BattleManager.battle.player_added.connect(_on_player_added)
 	BattleManager.battle.battle_started.connect(_on_battle_started)

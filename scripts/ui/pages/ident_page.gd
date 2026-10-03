@@ -44,7 +44,7 @@ func _on_ident_processed(success: bool):
 
 
 func _on_play_local_button_pressed() -> void:
-	SceneManager.page_transition_to("local_home")
+	BattleManager.start_battle()
 
 
 

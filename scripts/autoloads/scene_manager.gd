@@ -6,7 +6,8 @@ extends Node
 var page_scenes = {
 	"ident": preload("res://scenes/ui/pages/IdentPage.tscn"),
 	"online_home": preload("res://scenes/ui/pages/OnlineHomePage.tscn"),
-	"local_home": preload("res://scenes/ui/pages/LocalHomePage.tscn"),
+	"landing": preload("res://scenes/ui/pages/LandingPage.tscn"),
+	"local_lobby": preload("res://scenes/ui/pages/LocalLobbyPage.tscn"),
 	"options": preload("res://scenes/ui/pages/OptionsPage.tscn"),
 	"units": preload("res://scenes/ui/pages/UnitsPage.tscn"),
 	"battle": preload("res://scenes/ui/pages/IngamePage.tscn"),

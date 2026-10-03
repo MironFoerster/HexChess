@@ -3,8 +3,9 @@ extends Node
 
 @onready var battle_scene
 
-var battle: Battle
+var lobby: Lobby
 var map_generator: MapGenerator
+var battle: Battle # TODO dont know if this actually should be here
 
 signal battle_set()
 
@@ -15,36 +16,27 @@ func _ready():
 ### SUBMIT METHODS ###
 
 func submit_start_battle():
-	if battle.online:
+	if lobby.online:
+		pass
 		GlobalNetworking.start_battle(battle.lobby_code)
 	else:
-		battle.start()
-	
-
-func submit_command(command: Command):
-	if battle.online:
-		GlobalNetworking.submit_command(command)
-	else:
-		battle.execute_command(command)
-
-func submit_end_turn(command: Command):
-	if battle.online:
-		GlobalNetworking.submit_end_turn(command)
-	else:
-		battle.end_turn(command)
+		lobby.start()
 
 
 
 
+### EXECUTE METHODS ###
 
-### EXECUTE METHODS ###	
 func set_battle(_battle: Battle):
 	battle = _battle
 	battle_set.emit()
 
-func add_player(player_id: int, player: Player):
-	battle.add_player(player_id, player)
+func add_player(player: Player):
+	lobby.add_player(player)
 
+func create_player():
+	return lobby.create_player("Player1")
+	
 func start_battle():
 	battle.start()
 	SceneManager.page_transition_to("none")
@@ -52,7 +44,3 @@ func start_battle():
 func set_map(seed: int):
 	var generated_map: Map = map_generator.generate(seed)
 	battle.set_map(generated_map)
-	
-func execute_command(command: Command):
-	battle.execute_command(command)
-	

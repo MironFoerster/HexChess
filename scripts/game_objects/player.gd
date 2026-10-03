@@ -2,27 +2,29 @@ extends RefCounted
 class_name Player
 
 var player_id: int
+var user_id: int = -1
 var name: String
 var is_temp: bool
-var rank: int
 
 var reconnect_token: int
 
-func _init(_name: String = "", _is_temp: bool = true, _rank: int = 0):
+func _init(_player_id: int, _name: String = "", _is_temp: bool = true):
+	player_id = _player_id
 	name = _name
 	is_temp = _is_temp
-	rank = _rank
 
 func to_dict() -> Dictionary[StringName, Variant]:
 	return {
+		"player_id": player_id,
 		"name": name,
 		"is_temp": is_temp,
-		"rank": rank
 	}
 
 static func from_dict(data: Dictionary[StringName, Variant]) -> Player:
-	var player = Player.new()
-	player.name = data.get("name", "")
-	player.is_temp = data.get("is_temp", false)
-	player.rank = data.get("rank", 0)
+	var player = Player.new(
+		data.get("player_id", -1),
+		data.get("name", ""),
+		data.get("is_temp", false),
+		)
+
 	return player

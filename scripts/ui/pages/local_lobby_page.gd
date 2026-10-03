@@ -14,6 +14,8 @@ const local_gamemodes: Dictionary[StringName, Dictionary] = {
 	"icon_path": "res://assets/placeholder.png"}
 }
 
+var player_cards_by_player_id: Dictionary[int, Control]
+
 func _ready() -> void:
 	for mode in local_gamemodes.keys():
 		var gamemode_card = gamemode_card_scene.instantiate()
@@ -24,9 +26,15 @@ func _on_request_play_mode(mode_name: String):
 	pass#TODO GlobalNetworking.request_start_session_game(mode_name)
 
 func _on_add_player_button_pressed() -> void:
+	var player = LobbyManager.create_player()
 	var player_card = player_card_scene.instantiate()
-	player_card.remove_requested.connect(_on_remove_requested.bind(player_card))
+	player_card.initialize(player)
+	player_card.remove_requested.connect(_on_remove_requested.bind(player_card)) # TODO use bind for other connections too
 	player_container.add_child(player_card)
 	
 func _on_remove_requested(card):
 	card.queue_free()
+
+
+func _on_start_battle_button_pressed() -> void:
+	pass # Replace with function body.
