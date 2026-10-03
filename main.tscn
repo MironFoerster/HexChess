@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://2mmhrg43xxjv"]
 
 [ext_resource type="Script" uid="uid://j572wagqbkoe" path="res://scripts/main.gd" id="1_jpo50"]
-[ext_resource type="PackedScene" uid="uid://b7hqi7n6a5oh4" path="res://scenes/game/Game.tscn" id="2_lquwl"]
+[ext_resource type="PackedScene" uid="uid://b7hqi7n6a5oh4" path="res://scenes/game/Battle.tscn" id="2_lquwl"]
 [ext_resource type="Script" uid="uid://d13axvty14l2m" path="res://scripts/camera.gd" id="8_fyxhe"]
 
 [node name="Main" type="Node2D"]
@@ -21,7 +21,7 @@ metadata/_edit_use_anchors_ = true
 
 [node name="BattleContainer" type="Node2D" parent="."]
 
-[node name="Game" parent="BattleContainer" instance=ExtResource("2_lquwl")]
+[node name="Battle" parent="BattleContainer" instance=ExtResource("2_lquwl")]
 
 [node name="Camera" type="Camera2D" parent="."]
 script = ExtResource("8_fyxhe")

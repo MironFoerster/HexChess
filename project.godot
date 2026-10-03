@@ -24,6 +24,16 @@ GameManager="*res://scripts/autoloads/game_manager.gd"
 ServerManager="*res://scripts/autoloads/server_manager.gd"
 SceneManager="*res://scripts/autoloads/scene_manager.gd"
 BattleManager="*res://scripts/autoloads/battle_manager.gd"
+LobbyManager="*res://scripts/autoloads/lobby_manager.gd"
+
+[display]
+
+window/size/viewport_width=640
+window/size/viewport_height=360
+window/size/window_width_override=1920
+window/size/window_height_override=1080
+window/stretch/mode="viewport"
+window/stretch/scale_mode="integer"
 
 [editor_plugins]
 

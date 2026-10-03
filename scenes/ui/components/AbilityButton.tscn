@@ -1,0 +1,16 @@
+[gd_scene load_steps=2 format=3 uid="uid://bjtydfaapt4c"]
+
+[ext_resource type="Script" uid="uid://uf51fgamrh8a" path="res://scripts/ui/components/ability_button.gd" id="1_0c68o"]
+
+[node name="AbilityButton" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_0c68o")
+
+[node name="AbilityNameLabel" type="Label" parent="."]
+layout_mode = 0
+offset_right = 88.0
+offset_bottom = 23.0
+size_flags_horizontal = 4
+size_flags_vertical = 6
+text = "Cool Ability"

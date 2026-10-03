@@ -1,0 +1,92 @@
+[gd_scene load_steps=2 format=3 uid="uid://bg4nvsdo7qmcl"]
+
+[ext_resource type="Script" uid="uid://dvo2b4w2wdfbh" path="res://scripts/ui/pages/landing_page.gd" id="1_5gstr"]
+
+[node name="LandingPage" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_5gstr")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.679337, 0.565241, 0.726662, 1)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -100.0
+offset_top = -66.5
+offset_right = 100.0
+offset_bottom = 66.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 20
+
+[node name="CampaignButton" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+disabled = true
+text = "Campaign"
+
+[node name="RankedButton" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+disabled = true
+text = "Ranked
+"
+
+[node name="LocalButton" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+text = "Local Multiplayer
+"
+
+[node name="JoinOrCreateContainer" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -480.0
+offset_top = 16.0
+offset_right = -16.0
+offset_bottom = 56.0
+grow_horizontal = 0
+theme_override_constants/separation = 13
+alignment = 1
+
+[node name="JoinCodeInput" type="LineEdit" parent="JoinOrCreateContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "Enter Game-Code..."
+max_length = 6
+virtual_keyboard_type = 2
+caret_blink = true
+
+[node name="JoinPartyButton" type="Button" parent="JoinOrCreateContainer"]
+layout_mode = 2
+text = "Join Game"
+
+[node name="OrLabel" type="Label" parent="JoinOrCreateContainer"]
+layout_mode = 2
+text = "or"
+
+[node name="CreatePartyButton" type="Button" parent="JoinOrCreateContainer"]
+layout_mode = 2
+text = "Create Game"
+
+[connection signal="pressed" from="VBoxContainer/CampaignButton" to="." method="_on_campaign_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/RankedButton" to="." method="_on_ranked_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/LocalButton" to="." method="_on_local_button_pressed"]
+[connection signal="text_changed" from="JoinOrCreateContainer/JoinCodeInput" to="." method="_on_join_code_input_text_changed"]
+[connection signal="pressed" from="JoinOrCreateContainer/JoinPartyButton" to="." method="_on_join_party_button_pressed"]
+[connection signal="pressed" from="JoinOrCreateContainer/CreatePartyButton" to="." method="_on_create_party_button_pressed"]

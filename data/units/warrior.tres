@@ -1,13 +1,11 @@
 [gd_resource type="Resource" script_class="UnitData" load_steps=3 format=3 uid="uid://c0ek41gje0yib"]
 
+[ext_resource type="SpriteFrames" uid="uid://dx16ekktn5fsx" path="res://assets/units/warrior/warrior.res" id="1_0ka7x"]
 [ext_resource type="Script" uid="uid://cc6pi2bdifhu" path="res://data/_type_definitions/unit_data.gd" id="1_iksb3"]
-
-[sub_resource type="Resource" id="Resource_eb5xf"]
-metadata/__load_path__ = "res://assets/units/warrior_frames.tres"
 
 [resource]
 script = ExtResource("1_iksb3")
-display_name = ""
+display_name = "Warrior"
 max_hp = 3
-frames = SubResource("Resource_eb5xf")
-abilities = Array[StringName]([])
+frames = ExtResource("1_0ka7x")
+abilities = Array[StringName]([&"move_along_axis"])

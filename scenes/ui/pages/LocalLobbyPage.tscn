@@ -1,15 +1,15 @@
 [gd_scene load_steps=2 format=3 uid="uid://c5aymeoqfues7"]
 
-[ext_resource type="Script" uid="uid://ccwl3a5p4r470" path="res://scripts/ui/pages/local_home_page.gd" id="1_ig5dq"]
+[ext_resource type="Script" uid="uid://ccwl3a5p4r470" path="res://scripts/ui/pages/local_lobby_page.gd" id="1_7argd"]
 
-[node name="LocalHomePage" type="Control"]
+[node name="LocalLobbyPage" type="Control"]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_ig5dq")
+script = ExtResource("1_7argd")
 
 [node name="ColorRect" type="ColorRect" parent="."]
 layout_mode = 1
@@ -54,4 +54,10 @@ layout_mode = 0
 offset_right = 40.0
 offset_bottom = 40.0
 
+[node name="StartBattleButton" type="Button" parent="."]
+layout_mode = 0
+offset_right = 8.0
+offset_bottom = 8.0
+
 [connection signal="pressed" from="AddPlayerButton" to="." method="_on_add_player_button_pressed"]
+[connection signal="pressed" from="StartBattleButton" to="." method="_on_start_battle_button_pressed"]
