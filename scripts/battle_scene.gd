@@ -7,6 +7,7 @@ var UNIT_SCENE: PackedScene = preload("res://scenes/game/unit.tscn") as PackedSc
 @onready var map_node: MapScene = $"Map"
 @onready var squads_node: Node = $"Squads"
 @onready var active_unit_panel: ActiveUnitPanel = $"HUDLayer/HUDRoot/ActiveUnitPanel"
+@onready var current_squad_label: Label = $"HUDLayer/HUDRoot/CurrentSquadLabel"
 
 var squads: Dictionary[int, SquadScene]
 
@@ -29,11 +30,12 @@ func initialize(map_node: MapScene, squad_nodes: Dictionary[int, SquadScene]):
 
 func _on_battle_set():
 	BattleManager.battle.battle_started.connect(_on_battle_started)
+	BattleManager.battle.new_turn.connect(_on_new_turn)
 	BattleManager.battle.effect_tree_applied.connect(_on_effect_tree_applied)
 	
 	# find the correct map_node to use
 	# and initialize it with data from the battle object
-	if initializer["base_tilemap_node"] == null:
+	if initializer["map_node"] == null:
 		map_node = $"Map"
 	else:
 		map_node = initializer["map_node"]
@@ -56,7 +58,7 @@ func _on_battle_set():
 	for squad_id in BattleManager.battle.squads:
 		# instantiate a new or reuse an existing squad_scene from the initialization
 		var squad_scene: SquadScene
-		if initializer["squad_nodes"][squad_id] is SquadScene:
+		if initializer["squad_nodes"].has(squad_id):
 			squad_scene = initializer["squad_nodes"][squad_id]
 		else:
 			squad_scene = SQUAD_SCENE.instantiate()
@@ -69,7 +71,7 @@ func _on_battle_set():
 		for unit_id in squad_units:
 			# check if the squad_scene already has this unit, else instantiate a new one
 			var unit_scene: UnitScene
-			if not squad_scene.units[unit_id] is UnitScene:
+			if not squad_scene.units.has(unit_id):
 				unit_scene = UNIT_SCENE.instantiate()
 			
 			# every unit_scene (instantiated or reused) is newly initialized
@@ -79,6 +81,8 @@ func _on_battle_set():
 			squad_scene.add_unit(unit_scene)
 		
 		_add_squad(squad_scene)
+	
+	current_squad_label.text = str(BattleManager.battle.get_turn_squad_id())
 
 
 func _add_squad(squad: SquadScene):
@@ -89,6 +93,9 @@ func _add_squad(squad: SquadScene):
 ### HANDLERS FOR BATTLE SIGNALS ###
 func _on_battle_started():
 	print("Battle started!")
+
+func _on_new_turn(squad_id: int):
+	current_squad_label.text = str(squad_id)
 
 func _on_effect_tree_applied(effect_tree: Effect):
 	render_effect_tree(effect_tree)
@@ -130,7 +137,7 @@ func _spawn_unit(effect: Effect) -> Signal:
 func _on_unit_clicked(unit: UnitScene):
 	active_unit = unit
 	active_unit_panel.set_unit(unit)
-	
+
 func _on_ability_clicked(ability_type: Types.AbilityType):
 	if DataCatalog.abilities[ability_type].is_instant:
 		BattleManager.execute_command(Command.new("ability", Vector2i(0,0), {
@@ -161,3 +168,7 @@ func _on_end_turn_button_pressed() -> void:
 
 func _on_spawn_unit_button_pressed() -> void:
 	BattleManager.execute_command(Command.new("spawn_unit", Vector2i(0,0), {"unit_dict": Unit.new(-1, -1, Types.UnitType.WARRIOR, Vector2i(0,0))}))
+
+
+func _on_create_battle_button_pressed() -> void:
+	GameManager.create_battle()

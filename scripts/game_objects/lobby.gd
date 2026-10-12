@@ -103,17 +103,17 @@ func to_dict() -> Dictionary[StringName, Variant]:
 		"lobby_code": lobby_code
 	}
 
-static func from_dict(data: Dictionary[StringName, Variant]) -> Battle:
-	var battle = Battle.new()
+static func from_dict(data: Dictionary[StringName, Variant]) -> Lobby:
+	var lobby = Lobby.new()
 	
 	var _players: Dictionary[int, Player] = {}
 	for key in data["players"].keys():
 		_players[key] = Player.from_dict(data["players"][key])
 
-	battle.mode_name = data.get("mode_name", "")
-	battle.online = data.get("online", false)
-	battle.type = data.get("type", "public")
-	battle.admin_id = data.get("admin_id", -1)
-	battle.players = _players
-	battle.lobby_code = data.get("lobby_code", "")
-	return battle
+	lobby.mode_name = data.get("mode_name", "")
+	lobby.online = data.get("online", false)
+	lobby.type = data.get("type", "public")
+	lobby.admin_id = data.get("admin_id", -1)
+	lobby.players = _players
+	lobby.lobby_code = data.get("lobby_code", "")
+	return lobby

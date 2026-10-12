@@ -3,8 +3,8 @@ class_name Map
 
 var cells: Dictionary[Vector2i, Cell]
 
-func _init():
-	pass
+func _init(_cells: Dictionary[Vector2i, Cell] = {}):
+	cells = _cells
 	
 func setCell(coords: Vector2i, cell: Cell):
 	cells[coords] = cell

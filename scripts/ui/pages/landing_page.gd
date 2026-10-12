@@ -4,7 +4,7 @@ extends Control
 func _on_local_button_pressed() -> void:
 	SceneManager.page_transition_to("none")
 	LobbyManager.create_player()
-	BattleManager.set_battle(Battle.new(false, "private", -1, {}))
+	BattleManager.set_battle(Battle.new())
 	BattleManager.start_battle()
 
 

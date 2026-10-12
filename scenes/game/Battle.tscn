@@ -82,40 +82,27 @@ grow_vertical = 2
 mouse_filter = 2
 metadata/_edit_use_anchors_ = true
 
-[node name="StartBattleButton" type="Button" parent="HUDLayer/HUDRoot" unique_id=376230696]
+[node name="CreateBattleButton" type="Button" parent="HUDLayer/HUDRoot" unique_id=376230696]
 layout_mode = 0
 offset_right = 78.0
 offset_bottom = 31.0
+text = "Create Battle"
+
+[node name="StartBattleButton2" type="Button" parent="HUDLayer/HUDRoot" unique_id=1837306505]
+layout_mode = 0
+offset_left = 2.0
+offset_top = 48.0
+offset_right = 98.0
+offset_bottom = 79.0
 text = "Start Battle"
 
 [node name="EndTurnButton" type="Button" parent="HUDLayer/HUDRoot" unique_id=860004022]
 layout_mode = 0
-offset_left = 1.0
-offset_top = 138.0
-offset_right = 79.0
-offset_bottom = 169.0
+offset_left = 40.0
+offset_top = 181.0
+offset_right = 118.0
+offset_bottom = 212.0
 text = "End Turn"
-
-[node name="SpawnUnitButton" type="Button" parent="HUDLayer/HUDRoot" unique_id=1192047740]
-layout_mode = 0
-offset_top = 34.0
-offset_right = 97.0
-offset_bottom = 65.0
-text = "Spawn Unit"
-
-[node name="MoveButton" type="Button" parent="HUDLayer/HUDRoot" unique_id=1001197273]
-layout_mode = 0
-offset_top = 68.0
-offset_right = 99.0
-offset_bottom = 99.0
-text = "Move Mode"
-
-[node name="AttackButton" type="Button" parent="HUDLayer/HUDRoot" unique_id=1414763662]
-layout_mode = 0
-offset_top = 102.0
-offset_right = 106.0
-offset_bottom = 133.0
-text = "Attack Mode"
 
 [node name="ActiveUnitPanel" type="Control" parent="HUDLayer/HUDRoot" unique_id=36490936]
 anchors_preset = 0
@@ -125,13 +112,35 @@ offset_right = 111.0
 offset_bottom = 649.0
 script = ExtResource("3_lyhax")
 
+[node name="AttackButton" type="Button" parent="HUDLayer/HUDRoot/ActiveUnitPanel" unique_id=1414763662]
+layout_mode = 0
+offset_left = -71.0
+offset_top = -507.0
+offset_right = 35.0
+offset_bottom = -476.0
+text = "Attack Mode"
+
+[node name="MoveButton" type="Button" parent="HUDLayer/HUDRoot/ActiveUnitPanel" unique_id=1001197273]
+layout_mode = 0
+offset_right = 99.0
+offset_bottom = 40.0
+text = "Move Mode"
+
 [node name="AbilityContainer" type="HBoxContainer" parent="HUDLayer/HUDRoot/ActiveUnitPanel" unique_id=1340407306]
 layout_mode = 0
 offset_right = 40.0
 offset_bottom = 40.0
 
-[connection signal="pressed" from="HUDLayer/HUDRoot/StartBattleButton" to="." method="_on_end_turn_button_pressed"]
+[node name="CurrentSquadLabel" type="Label" parent="HUDLayer/HUDRoot" unique_id=1349776074]
+layout_mode = 0
+offset_left = 14.0
+offset_top = 183.0
+offset_right = 24.0
+offset_bottom = 206.0
+text = "1"
+
+[connection signal="pressed" from="HUDLayer/HUDRoot/CreateBattleButton" to="." method="_on_create_battle_button_pressed"]
+[connection signal="pressed" from="HUDLayer/HUDRoot/StartBattleButton2" to="." method="_on_start_battle_button_pressed"]
 [connection signal="pressed" from="HUDLayer/HUDRoot/EndTurnButton" to="." method="_on_end_turn_button_pressed"]
-[connection signal="pressed" from="HUDLayer/HUDRoot/SpawnUnitButton" to="." method="_on_spawn_unit_button_pressed"]
-[connection signal="pressed" from="HUDLayer/HUDRoot/MoveButton" to="." method="_on_end_turn_button_pressed"]
-[connection signal="pressed" from="HUDLayer/HUDRoot/AttackButton" to="." method="_on_end_turn_button_pressed"]
+[connection signal="pressed" from="HUDLayer/HUDRoot/ActiveUnitPanel/AttackButton" to="." method="_on_end_turn_button_pressed"]
+[connection signal="pressed" from="HUDLayer/HUDRoot/ActiveUnitPanel/MoveButton" to="." method="_on_end_turn_button_pressed"]

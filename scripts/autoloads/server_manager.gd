@@ -8,7 +8,7 @@ var active_players: Dictionary[int, Player] = {}
 var reconnecting_peers: Dictionary[int, float] = {} 
 var map_generator: MapGenerator
 var rng: RandomNumberGenerator
-var battles: Array[Battle] = [] # Battle.new("private", 3, {3: Player.new("bob")}, 123456, "Session2")
+var battles: Array[Battle] = []
 
 var _next_player_id: int = 0
 

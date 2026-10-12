@@ -20,16 +20,15 @@ var units_by_coords: Dictionary[Vector2i, Unit] = {} # coords : unit reference
 ### Signals that the battle emits to notify the game when the state has changed ###
 signal battle_started()
 signal map_updated()
+signal new_turn(squad_id: int)
 signal effect_tree_applied(effect_tree: Effect)
 
 
-func _init(_online: bool = false, _type: String = "public", _admin_id: int = -1, _squads: Dictionary[int, Squad] = {}, _lobby_code: int = 0, _mode_name: String = "") -> void:
-	online = _online
-	type = _type
-	admin_id = _admin_id
+func _init(_map: Map = Map.new(), _squads: Dictionary[int, Squad] = {}, _mode_name: String = "") -> void:
+	map = _map
 	squads = _squads
-	lobby_code = _lobby_code
 	mode_name = _mode_name
+	squad_order = squads.keys()
 	
 	while next_squad_id in squads.keys():
 		next_squad_id += 1
@@ -43,6 +42,7 @@ func add_squad(squad: Squad):
 		squads[next_squad_id] = squad
 		while next_squad_id in squads.keys():
 			next_squad_id += 1
+	squad_order.append(squad.squad_id)
 
 func start():
 	current_turn_index = 0
@@ -64,6 +64,7 @@ func execute_command(command: Command):
 func end_turn():
 	current_turn_index += 1
 	current_turn_index %= squad_order.size()
+	new_turn.emit(squad_order[current_turn_index])
 
 
 
@@ -177,6 +178,9 @@ func get_unit_abilities(squad_id: int, unit_id: int) -> Array[Ability]:
 		abilities.append(Ability.new(ability_type, get_ability_allowed_cells(unit.squad_id, unit.unit_id, ability_type), true))
 		
 	return abilities
+
+func get_turn_squad_id():
+	return squad_order[current_turn_index]
 
 
 
