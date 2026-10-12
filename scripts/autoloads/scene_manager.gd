@@ -10,7 +10,6 @@ var page_scenes = {
 	"local_lobby": preload("res://scenes/ui/pages/LocalLobbyPage.tscn"),
 	"options": preload("res://scenes/ui/pages/OptionsPage.tscn"),
 	"units": preload("res://scenes/ui/pages/UnitsPage.tscn"),
-	"battle": preload("res://scenes/ui/pages/IngamePage.tscn"),
 	"private_lobby_joined": preload("res://scenes/ui/pages/PrivateLobbyJoinedPage.tscn"),
 	"private_lobby_admin": preload("res://scenes/ui/pages/PrivateLobbyAdminPage.tscn"),
 }

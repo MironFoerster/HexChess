@@ -8,7 +8,7 @@ extends Control
 @onready var register_password_repeat = $PlayOnlineContainer/IdentTabContainer/RegisterContainer/PasswordRepeatLineEdit
 
 func _ready() -> void:
-	GameManager.ident_processed.connect(_on_ident_processed)
+	ClientManager.ident_processed.connect(_on_ident_processed)
 
 ## TAB NAVIGATION
 func _on_nickname_link_button_pressed() -> void:
@@ -59,5 +59,5 @@ func _clear_all_inputs():
 
 
 func _on_connect_to_server_button_pressed() -> void:
-	GameManager.initialize_client()
+	ClientManager.initialize_client()
 	GlobalNetworking.connect_to_server()

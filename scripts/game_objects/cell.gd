@@ -1,12 +1,12 @@
 extends RefCounted
 class_name Cell
 
-var terrain_type: String
+var terrain_type: Types.TerrainType
 var feature: String
 var status: Array[Status] = []
 var items: Array[Item] = []
 
-func _init(_terrain_type: String = "", _feature: String = "", _status: Array[Status] = [], _items: Array[Item] = []):
+func _init(_terrain_type: Types.TerrainType = Types.TerrainType.NONE, _feature: String = "", _status: Array[Status] = [], _items: Array[Item] = []):
 	terrain_type = _terrain_type
 	feature = _feature
 	status = _status.duplicate()  # ensure we dont pass by reference

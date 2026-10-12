@@ -7,12 +7,10 @@ var mode_name: String
 var admin_id: int
 var players: Dictionary[int, Player] # player_id : player_object
 var lobby_code: int
-var units: Dictionary[int, BattleUnit] # unit_id : unit_object
+var units: Dictionary[int, Unit] # unit_id : unit_object
 var map: Map
 
-var units_by_id: Dictionary[int, BattleUnit] = {}
-var unit_ids_by_coords: Dictionary[Vector2i, int] = {}
-var unit_ids_by_owner_id: Dictionary[int, Array] = {}
+var units_by_coords: Dictionary[Vector2i, Unit] = {}
 
 var _next_player_id: int = 0
 var _next_unit_id: int = 0
@@ -66,12 +64,12 @@ func get_ability_allowed_cells(unit_id: int, ability_type: Types.AbilityType) ->
 	# TODO: remove unreachable or already used cells
 	return allowed_cells
 	
-func get_unit_abilities(unit_id: int) -> Array[Ability]:
-	var abilities: Array[Ability] = []
-	for ability_type in DataCatalog.units[units_by_id[unit_id].unit_type].abilities:
-		abilities.append(Ability.new(ability_type, get_ability_allowed_cells(unit_id, ability_type), true))
-		
-	return abilities
+#func get_unit_abilities(squad_id: int, unit_id: int) -> Array[Ability]:
+	#var abilities: Array[Ability] = []
+	#for ability_type in DataCatalog.units[units_by_id[unit_id].unit_type].abilities:
+		#abilities.append(Ability.new(ability_type, get_ability_allowed_cells(unit_id, ability_type), true))
+		#
+	#return abilities
 
 
 

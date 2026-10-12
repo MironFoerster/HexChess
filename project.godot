@@ -29,6 +29,7 @@ ServerManager="*res://scripts/autoloads/server_manager.gd"
 SceneManager="*res://scripts/autoloads/scene_manager.gd"
 BattleManager="*res://scripts/autoloads/battle_manager.gd"
 LobbyManager="*res://scripts/autoloads/lobby_manager.gd"
+ClientManager="*uid://cblblobc0fst8"
 
 [display]
 

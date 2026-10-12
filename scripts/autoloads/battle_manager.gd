@@ -21,17 +21,17 @@ func submit_start_battle():
 		battle.start()
 	
 
-func submit_command(command: Command):
+func execute_command(command: Command):
 	if battle.online:
 		GlobalNetworking.submit_command(command)
 	else:
 		battle.execute_command(command)
 
-func submit_end_turn(command: Command):
+func end_turn():
 	if battle.online:
-		GlobalNetworking.submit_end_turn(command)
+		GlobalNetworking.submit_end_turn()
 	else:
-		battle.end_turn(command)
+		battle.end_turn()
 
 
 
@@ -52,7 +52,4 @@ func start_battle():
 func set_map(seed: int):
 	var generated_map: Map = map_generator.generate(seed)
 	battle.set_map(generated_map)
-	
-func execute_command(command: Command):
-	battle.execute_command(command)
 	

@@ -1,3 +1,4 @@
+class_name ActiveUnitPanel
 extends Control
 
 var button_scene = load("res://scenes/ui/components/AbilityButton.tscn") as PackedScene
@@ -6,14 +7,11 @@ var button_scene = load("res://scenes/ui/components/AbilityButton.tscn") as Pack
 signal ability_clicked(ability_type: StringName)
 
 
-func set_unit(unit_id: int):
+func set_unit(unit: UnitScene):
 	for c in container.get_children():
 		c.queue_free()
 	
-	if unit_id == -1:
-		return
-	
-	var abilities = BattleManager.battle.get_unit_abilities(unit_id)
+	var abilities = BattleManager.battle.get_unit_abilities(unit.squad_id, unit.unit_id)
 
 	for ability in abilities:
 		var b = button_scene.instantiate()

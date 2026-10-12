@@ -8,7 +8,7 @@ func generate(seed: int) -> Map:
 	var map = Map.new()
 	for i in range(0, 10):
 		for j in range(0, 10):
-			map.setCell(Vector2i(i, j), Cell.new("forest"))
+			map.setCell(Vector2i(i, j), Cell.new(Types.TerrainType.FOREST))
 	return map
 
 

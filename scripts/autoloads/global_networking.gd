@@ -122,7 +122,7 @@ func identify_player_processed(to: Array[int], success: bool, player: Player = n
 	})
 	
 func handle_identify_player_processed(data: Dictionary):
-	GameManager.handle_identify_player_processed(data.success, Player.from_dict(data.player_dict))
+	ClientManager.handle_identify_player_processed(data.success, Player.from_dict(data.player_dict))
 
 
 ### CREATE PRIVATE ROOM ###
@@ -139,7 +139,7 @@ func create_private_room_processed(to: Array[int], success: bool, battle: Battle
 	})
 	
 func handle_create_private_room_processed(data: Dictionary):
-	GameManager.handle_create_private_room_processed(data.success, Battle.from_dict(data.battle_dict))
+	ClientManager.handle_create_private_room_processed(data.success, Battle.from_dict(data.battle_dict))
 
 
 ### JOIN PRIVATE ROOM ###
@@ -158,7 +158,7 @@ func join_private_room_processed(to: Array[int], success: bool, battle: Battle =
 	})
 	
 func handle_join_private_room_processed(data: Dictionary):
-	GameManager.handle_join_private_room_processed(data.success, Battle.from_dict(data.battle_dict))
+	ClientManager.handle_join_private_room_processed(data.success, Battle.from_dict(data.battle_dict))
 
 ### START BATTLE ###
 func start_battle(code: int):
@@ -175,7 +175,7 @@ func start_battle_processed(to: Array[int], success: bool):
 func handle_start_battle_processed(data: Dictionary):
 	pass
 	
-### SUBMIT COMMAND ###
+### SUBMIT COMMAND ### TODO change to execute command, no need for this semantic abstraction
 func submit_command(command: Command):
 	send_to_server("submit_command", {
 		"command_dict": command.to_dict(),

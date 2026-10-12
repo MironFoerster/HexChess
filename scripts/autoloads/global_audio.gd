@@ -18,7 +18,7 @@ func _ready():
 	add_child(music_player)
 	music_player.stream = musics["home"]
 	_fade_in(music_player, 0.5)
-	music_player.play()
+	#music_player.play()
 	
 func switch_music_to(new_music):
 	if music_enabled and current_music != new_music:
