@@ -46,6 +46,7 @@ func add_squad(squad: Squad):
 
 func start():
 	current_turn_index = 0
+	new_turn.emit(squad_order[current_turn_index])
 	battle_started.emit()
 
 func set_map(_map: Map):

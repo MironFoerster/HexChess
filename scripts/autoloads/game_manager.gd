@@ -14,8 +14,11 @@ func create_battle():
 	
 	var squads: Dictionary[int, Squad] = {
 		0: Squad.new("", 0, {
-				0: Unit.new(0, 0, Types.UnitType.WARRIOR, Vector2i(0, 0), 10, [], []),
+				0: Unit.new(0, 0, Types.UnitType.WARRIOR, Vector2i(0, 2), 10, [], []),
+				2: Unit.new(2, 0, Types.UnitType.WARRIOR, Vector2i(0, 1), 10, [], []),
+				3: Unit.new(3, 0, Types.UnitType.WARRIOR, Vector2i(0, 0), 10, [], []),
 				1: Unit.new(1, 0, Types.UnitType.WARRIOR, Vector2i(1, 0), 5, [], []),
+				4: Unit.new(4, 0, Types.UnitType.WARRIOR, Vector2i(2, 0), 5, [], []),
 			}),
 		1: Squad.new("", 1, {
 				0: Unit.new(0, 1, Types.UnitType.WARRIOR, Vector2i(3, 3), 10, [], []),

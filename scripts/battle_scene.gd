@@ -77,7 +77,7 @@ func _on_battle_set():
 			# every unit_scene (instantiated or reused) is newly initialized
 			# with the specifications from the battle object
 			# this does not include positioning of the unit_scene
-			unit_scene.initialize(squad_units[unit_id])
+			unit_scene.initialize(squad_units[unit_id], _map_to_position(Vector2i(-5, -5)))
 			squad_scene.add_unit(unit_scene)
 		
 		_add_squad(squad_scene)
@@ -92,16 +92,26 @@ func _add_squad(squad: SquadScene):
 
 ### HANDLERS FOR BATTLE SIGNALS ###
 func _on_battle_started():
-	print("Battle started!")
+	for squad_id: int in squads:
+		for unit_id: int in squads[squad_id].units:
+			squads[squad_id].units[unit_id].move_to(_map_to_position(BattleManager.battle.squads[squad_id].units[unit_id].coords))
 
 func _on_new_turn(squad_id: int):
 	current_squad_label.text = str(squad_id)
+	
+	# highlight all units in current squad
+	var coords: Array[Vector2i] = []
+	for unit: Unit in BattleManager.battle.squads[squad_id].units.values():
+		coords.append(unit.coords)
+	map_node.set_highlights(coords)
 
 func _on_effect_tree_applied(effect_tree: Effect):
 	render_effect_tree(effect_tree)
 
 
 
+func _map_to_position(coords: Vector2i) -> Vector2:
+	return map_node.base_map_node.to_global(map_node.base_map_node.map_to_local(coords))
 
 
 
@@ -122,7 +132,7 @@ func _get_atlas_coords_from_cell(cell: Cell) -> Vector2i:
 
 func _spawn_unit(effect: Effect) -> Signal:
 	var unit_scene: UnitScene = UNIT_SCENE.instantiate()
-	unit_scene.initialize(effect.data.unit)
+	unit_scene.initialize(effect.data.unit, map_node.base_map_node.map_to_local(Vector2i(3,3)))
 	
 	# add unit_scene to indices
 	unit_nodes_by_id[effect.data.unit.unit_id] = unit_scene
